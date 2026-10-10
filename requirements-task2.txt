@@ -1,0 +1,2 @@
+# Keep the PyTorch build platform-specific; install the CUDA/CPU build first.
+ultralytics==8.4.155

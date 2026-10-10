@@ -1,0 +1,77 @@
+# Task 2 — VRU detection and tracking
+
+Task 1 is paused at the CSP checkpoint download. This task uses the separate
+[YOLO26n-BDD100K](https://github.com/lochuan/yolo26n-bdd100k) repository and
+does not modify the model architecture.
+
+## Requirement 1 — do this part locally
+
+The YOLO26n-BDD100K repository already provides an FP32 checkpoint, so this
+path avoids the Baidu download used by Task 1:
+
+```powershell
+cd D:\GIT
+git clone https://github.com/lochuan/yolo26n-bdd100k.git
+cd yolo26n-bdd100k
+
+# Install the PyTorch build appropriate for your machine first if needed.
+cd D:\GIT\VRU_Det
+python -m pip install -r requirements-task2.txt
+```
+
+For the first trial use:
+
+```text
+D:\GIT\yolo26n-bdd100k\weights\yolo26n-bdd100k-fp32.pt
+```
+
+The repository also contains fixed-shape FP32/INT8 ONNX exports. Do not start
+with INT8 while validating tracking; switch to ONNX after the FP32 pipeline is
+working.
+
+## Requirements 2–7 — run the pipeline
+
+The NavSim mini dataset is image-only. The runner processes one camera folder
+as a frame sequence, writes an annotated MP4, and emits one CSV row per
+detection:
+
+```powershell
+cd D:\GIT\VRU_DET
+python task2_vru_tracking.py `
+  --model D:\GIT\yolo26n-bdd100k\weights\yolo26n-bdd100k-fp32.pt `
+  --input D:\navsim_workspace\dataset\sensor_blobs\mini\2021.06.09.14.58.55_veh-35_01894_02311\CAM_F0 `
+  --device 0 `
+  --imgsz 640
+```
+
+Outputs:
+
+- `output/task2_vru_tracking.mp4`: bounding box, class, confidence, track ID.
+- `output/task2_tracks.csv`: `frame_id, track_id, class, confidence, bbox`.
+- `output/task2_metrics.json`: mean/p50/p95 inference latency, end-to-end
+  latency, and effective FPS.
+
+The default tracker is ByteTrack. To compare BoT-SORT, run the same command
+with `--tracker botsort`. The tracker is selected by configuration; no model
+code changes are needed. An ONNX model can be tested by changing only
+`--model`, for example:
+
+```powershell
+python task2_vru_tracking.py `
+  --model D:\GIT\yolo26n-bdd100k\models\yolo26n-bdd7-fp32-384x640.onnx `
+  --input D:\navsim_workspace\dataset\sensor_blobs\mini\2021.06.09.14.58.55_veh-35_01894_02311\CAM_F0 `
+  --imgsz 384 640 `
+  --device cpu
+```
+
+Because the NavSim filenames are hashes rather than timestamps, a camera
+folder is only a deterministic fallback sequence. For trustworthy temporal
+track IDs, provide a video recorded from the camera.
+
+## Scope
+
+- Required classes are resolved by name: `person`, `rider`, `bicycle`,
+  `motorcycle`.
+- The code uses Ultralytics' public tracking interface, keeping Python/PyTorch
+  setup separate from the model and leaving a clean path to ONNX/TensorRT.
+- No training is performed.

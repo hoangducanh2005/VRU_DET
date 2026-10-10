@@ -128,3 +128,9 @@ Script dùng nguyên `format_img` của repository CSP: ảnh BGR do OpenCV đ�
 - Checkpoint HDF5 không được commit vào repository vì kích thước lớn và bạn được yêu cầu tự tải. Nếu thiếu file, script dừng với thông báo rõ ràng.
 - Repo gốc có các lệnh debug `print` trong residual blocks; script chỉ redirect log forward đó, không sửa model.
 - Inference toàn bộ 6,672 ảnh có thể mất thời gian và tạo nhiều GB output; nên chạy `--limit 2` trước.
+
+## Task 2 — VRU tracking
+
+Pipeline YOLO26n-BDD100K + ByteTrack nằm trong [README_TASK2.md](README_TASK2.md).
+Task 1 hiện tạm dừng ở bước tải checkpoint CSP; Task 2 dùng checkpoint FP32
+từ GitHub của YOLO26n-BDD100K để tránh phụ thuộc Baidu.
