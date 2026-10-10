@@ -30,7 +30,29 @@ python -c "import torch; print(torch.__version__); print(torch.cuda.is_available
 
 Nếu không dùng GPU, bỏ lệnh PyTorch CUDA và cài bản PyTorch phù hợp máy; script vẫn có thể chạy với `--device cpu` nhưng sẽ chậm.
 
-## 2. Tự tải checkpoint `net_e121_l0.hdf5`
+## 2. Tải checkpoint `net_e121_l0.hdf5` khi Baidu khó tải
+
+Baidu vẫn còn file gốc nhưng endpoint tải trực tiếp chặn phiên ẩn danh (`errno=9019`). Project có `download_baidu_checkpoint.py` để tự động xác thực link, lấy direct link, hỗ trợ file `.part` và kiểm tra MD5. Không gửi cookie Baidu qua chat và không commit cookie.
+
+Checkpoint đã được xác nhận trên share gốc:
+
+```text
+remote path: /research/models_CSP/cityperson/withoffset/net_e121_l0.hdf5
+size: 160609096 bytes
+md5: 464fadd6a04527d00be91fe7769bdde1
+share password: jcgd
+```
+
+Đăng nhập Baidu trong trình duyệt, lấy cookie `BDUSS` của `pan.baidu.com` từ DevTools, rồi chạy trong PowerShell. Cookie chỉ nằm trong cửa sổ PowerShell hiện tại:
+
+```powershell
+python -m pip install -r requirements.txt
+$env:BAIDU_BDUSS = '<paste-BDUSS-locally-here>'
+.\.venv\Scripts\python.exe .\download_baidu_checkpoint.py
+Remove-Item Env:BAIDU_BDUSS
+```
+
+Nếu download bị ngắt, chạy lại lệnh; script sẽ tiếp tục từ `net_e121_l0.hdf5.part`. Nếu báo `errno=9019`, phiên đăng nhập hoặc cookie đã hết hạn, hãy đăng nhập lại và lấy lại `BDUSS`.
 
 Repository CSP gốc cung cấp checkpoint qua Baidu Netdisk trong README của repo:
 
