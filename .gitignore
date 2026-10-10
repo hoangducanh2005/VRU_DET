@@ -1,5 +1,6 @@
 .venv/
 csp.pytorch/
+session/yolo26n-bdd100k/
 __pycache__/
 *.py[cod]
 output/

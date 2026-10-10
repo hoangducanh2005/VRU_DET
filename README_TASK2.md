@@ -10,19 +10,19 @@ The YOLO26n-BDD100K repository already provides an FP32 checkpoint, so this
 path avoids the Baidu download used by Task 1:
 
 ```powershell
-cd D:\GIT
-git clone https://github.com/lochuan/yolo26n-bdd100k.git
-cd yolo26n-bdd100k
+cd D:\GIT\VRU_DET
+New-Item -ItemType Directory -Force .\session | Out-Null
+git clone https://github.com/lochuan/yolo26n-bdd100k.git .\session\yolo26n-bdd100k
 
 # Install the PyTorch build appropriate for your machine first if needed.
-cd D:\GIT\VRU_Det
-python -m pip install -r requirements-task2.txt
+cd D:\GIT\VRU_DET
+.\.venv\Scripts\python.exe -m pip install -r requirements-task2.txt
 ```
 
 For the first trial use:
 
 ```text
-D:\GIT\yolo26n-bdd100k\weights\yolo26n-bdd100k-fp32.pt
+D:\GIT\VRU_DET\session\yolo26n-bdd100k\weights\yolo26n-bdd100k-fp32.pt
 ```
 
 The repository also contains fixed-shape FP32/INT8 ONNX exports. Do not start
@@ -38,7 +38,7 @@ detection:
 ```powershell
 cd D:\GIT\VRU_DET
 python task2_vru_tracking.py `
-  --model D:\GIT\yolo26n-bdd100k\weights\yolo26n-bdd100k-fp32.pt `
+  --model D:\GIT\VRU_DET\session\yolo26n-bdd100k\weights\yolo26n-bdd100k-fp32.pt `
   --input D:\navsim_workspace\dataset\sensor_blobs\mini\2021.06.09.14.58.55_veh-35_01894_02311\CAM_F0 `
   --device 0 `
   --imgsz 640
@@ -58,7 +58,7 @@ code changes are needed. An ONNX model can be tested by changing only
 
 ```powershell
 python task2_vru_tracking.py `
-  --model D:\GIT\yolo26n-bdd100k\models\yolo26n-bdd7-fp32-384x640.onnx `
+  --model D:\GIT\VRU_DET\session\yolo26n-bdd100k\models\yolo26n-bdd7-fp32-384x640.onnx `
   --input D:\navsim_workspace\dataset\sensor_blobs\mini\2021.06.09.14.58.55_veh-35_01894_02311\CAM_F0 `
   --imgsz 384 640 `
   --device cpu
