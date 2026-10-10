@@ -99,7 +99,7 @@ Tuỳ chọn hữu ích:
 
 ## Preprocessing và kích thước ảnh
 
-Script dùng nguyên `format_img` của repository CSP: ảnh BGR do OpenCV đọc, chuyển `float32`, trừ mean `[103.939, 116.779, 123.68]` theo từng kênh và không resize. Decoder `parse_det_offset` dùng output stride `4`, `h = exp(height) * 4`, tỉ lệ pedestrian `w = 0.41 * h`, offset center và NMS IoU `0.5`; box được clip vào kích thước ảnh gốc. Vì không tự resize hoặc đổi kiến trúc, kích thước đầu vào của dataset được giữ nguyên.
+Script dùng nguyên `format_img` của repository CSP: ảnh BGR do OpenCV đọc, chuyển `float32`, trừ mean `[103.939, 116.779, 123.68]` theo từng kênh. CSP gốc cần kích thước chia hết cho stride 32 để ba nhánh `p3/p4/p5` ghép được; ảnh NavSim `1080×1920` được pad phía dưới thành `1088×1920` bằng channel mean, không resize và không sửa kiến trúc. Sau decode, box được clip và lọc lại theo kích thước gốc `1080×1920`. Decoder `parse_det_offset` dùng output stride `4`, `h = exp(height) * 4`, tỉ lệ pedestrian `w = 0.41 * h`, offset center và NMS IoU `0.5`.
 
 ## Giới hạn đã biết
 

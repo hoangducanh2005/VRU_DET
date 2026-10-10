@@ -28,7 +28,7 @@ sys.path.insert(0, str(REPO_DIR))
 
 from models.cspnet import CSPNet_p3p4p5  # noqa: E402
 from utils.keras_weights_loader import load_keras_weights  # noqa: E402
-from utils.utils import format_img, parse_det_offset  # noqa: E402
+from utils.utils import format_img, img_channel_mean, parse_det_offset  # noqa: E402
 
 
 DEFAULT_INPUT_DIR = Path(
@@ -132,6 +132,24 @@ def draw_detections(image: np.ndarray, boxes: np.ndarray) -> np.ndarray:
     return rendered
 
 
+def pad_image_to_model_stride(
+    image: np.ndarray, stride: int = 32
+) -> tuple[np.ndarray, tuple[int, int]]:
+    """Pad only bottom/right so CSP's multi-scale maps have equal sizes."""
+    height, width = image.shape[:2]
+    padded_height = ((height + stride - 1) // stride) * stride
+    padded_width = ((width + stride - 1) // stride) * stride
+    if (padded_height, padded_width) == (height, width):
+        return image, (height, width)
+
+    # Use the repository's channel mean for padding. After format_img this
+    # becomes zero, so the added area does not introduce a color edge.
+    padded = np.empty((padded_height, padded_width, 3), dtype=np.float32)
+    padded[...] = np.asarray(img_channel_mean, dtype=np.float32)
+    padded[:height, :width] = image
+    return padded, (height, width)
+
+
 def run_one(
     model: torch.nn.Module,
     image: np.ndarray,
@@ -139,7 +157,8 @@ def run_one(
     score_threshold: float,
 ) -> np.ndarray:
     # This is the repository's exact BGR mean-subtraction preprocessing.
-    formatted = format_img(image)
+    model_image, (original_height, original_width) = pad_image_to_model_stride(image)
+    formatted = format_img(model_image)
     input_dim = formatted.shape[1:3]
     tensor = torch.from_numpy(formatted).to(device=device)
     tensor = tensor.permute(0, 3, 1, 2)
@@ -158,7 +177,11 @@ def run_one(
         )
     if len(boxes) == 0:
         return np.empty((0, 5), dtype=np.float32)
-    return np.asarray(boxes, dtype=np.float32)
+    boxes = np.asarray(boxes, dtype=np.float32)
+    boxes[:, [0, 2]] = np.clip(boxes[:, [0, 2]], 0, original_width)
+    boxes[:, [1, 3]] = np.clip(boxes[:, [1, 3]], 0, original_height)
+    valid = (boxes[:, 2] > boxes[:, 0]) & (boxes[:, 3] > boxes[:, 1])
+    return boxes[valid]
 
 
 def main() -> int:
