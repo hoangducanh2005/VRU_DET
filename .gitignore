@@ -1,0 +1,7 @@
+.venv/
+csp.pytorch/
+__pycache__/
+*.py[cod]
+output/
+*.hdf5
+*.h5
