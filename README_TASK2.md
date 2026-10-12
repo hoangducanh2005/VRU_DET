@@ -51,6 +51,27 @@ Outputs:
 - `output/task2_metrics.json`: mean/p50/p95 inference latency, end-to-end
   latency, and effective FPS.
 
+## Kiểm tra từng frame
+
+Video mặc định phát liên tục nên khó kiểm tra ByteTrack. Dùng `--step` để
+hiển thị một frame rồi chờ phím bất kỳ trước khi chuyển sang frame tiếp theo;
+nhấn `q` để dừng. Nên giới hạn số frame lúc debug:
+
+```powershell
+.\.venv\Scripts\python.exe .\task2_vru_tracking.py `
+  --model D:\GIT\VRU_DET\session\yolo26n-bdd100k\weights\yolo26n-bdd100k-fp32.pt `
+  --input D:\navsim_workspace\dataset\sensor_blobs\mini\2021.06.09.14.58.55_veh-35_01894_02311\CAM_F0 `
+  --device 0 `
+  --imgsz 640 `
+  --show `
+  --step `
+  --max-frames 20 `
+  --save-frames-dir output\debug_frames
+```
+
+Nếu chỉ muốn phát chậm, dùng `--show --delay-ms 500` thay cho `--step`.
+Thời gian chờ của chế độ debug không được tính vào end-to-end latency.
+
 The default tracker is ByteTrack. To compare BoT-SORT, run the same command
 with `--tracker botsort`. The tracker is selected by configuration; no model
 code changes are needed. An ONNX model can be tested by changing only

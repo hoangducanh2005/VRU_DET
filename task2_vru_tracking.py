@@ -60,6 +60,23 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--fps", type=float, default=20.0, help="FPS used for an image directory")
     parser.add_argument("--max-frames", type=int, default=0, help="0 means process all frames")
     parser.add_argument("--show", action="store_true", help="Display the annotated stream")
+    parser.add_argument(
+        "--step",
+        action="store_true",
+        help="Show one frame and wait for a key before processing the next frame",
+    )
+    parser.add_argument(
+        "--delay-ms",
+        type=int,
+        default=0,
+        help="Playback delay in milliseconds; ignored in --step mode",
+    )
+    parser.add_argument(
+        "--save-frames-dir",
+        type=Path,
+        default=None,
+        help="Optional directory for individual annotated frame JPEGs",
+    )
     return parser.parse_args()
 
 
@@ -194,9 +211,13 @@ def main() -> int:
     args = parse_args()
     if not args.input.exists():
         raise FileNotFoundError(f"Input does not exist: {args.input}")
+    if args.delay_ms < 0:
+        raise ValueError("--delay-ms must be >= 0")
     args.output_video.parent.mkdir(parents=True, exist_ok=True)
     args.output_csv.parent.mkdir(parents=True, exist_ok=True)
     args.metrics_json.parent.mkdir(parents=True, exist_ok=True)
+    if args.save_frames_dir is not None:
+        args.save_frames_dir.mkdir(parents=True, exist_ok=True)
 
     try:
         from ultralytics import YOLO
@@ -276,9 +297,15 @@ def main() -> int:
             frame_count += 1
             end_to_end_ms.append((time.perf_counter() - frame_start) * 1000.0)
 
-            if args.show:
+            if args.save_frames_dir is not None:
+                frame_path = args.save_frames_dir / f"frame_{frame_id:06d}.jpg"
+                if not cv2.imwrite(str(frame_path), frame):
+                    raise RuntimeError(f"Could not save frame: {frame_path}")
+
+            if args.show or args.step:
                 cv2.imshow("VRU Detection + Tracking", frame)
-                if cv2.waitKey(1) & 0xFF == ord("q"):
+                wait_ms = 0 if args.step else max(1, args.delay_ms)
+                if cv2.waitKey(wait_ms) & 0xFF == ord("q"):
                     break
     finally:
         if output_writer is not None:
