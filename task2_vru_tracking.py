@@ -5,9 +5,8 @@ runner intentionally does not change the model architecture: switching from
 the FP32 PyTorch checkpoint to an ONNX export only changes ``--model``.
 
 Input can be a video file or a directory of images.  For a directory, files
-are processed in lexicographic filename order.  The NavSim mini image names
-are hashes, so a temporally ordered video is preferable for meaningful track
-IDs.
+are processed by file modification timestamp by default.  The NavSim mini
+image names are hashes, so lexicographic filename order is not temporal.
 """
 
 from __future__ import annotations
@@ -38,6 +37,12 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=DEFAULT_INPUT,
         help="Video file or image directory (default: NavSim CAM_F0)",
+    )
+    parser.add_argument(
+        "--image-sort",
+        choices=("mtime", "name"),
+        default="mtime",
+        help="Ordering for image folders: file timestamp (default) or filename",
     )
     parser.add_argument("--output-video", type=Path, default=Path("output/task2_vru_tracking.mp4"))
     parser.add_argument("--output-csv", type=Path, default=Path("output/task2_tracks.csv"))
@@ -85,11 +90,16 @@ def resolve_tracker(value: str) -> str:
     return aliases.get(value.lower(), value)
 
 
-def iter_image_paths(folder: Path) -> list[Path]:
-    return sorted(
-        (path for path in folder.iterdir() if path.is_file() and path.suffix.lower() in IMAGE_EXTENSIONS),
-        key=lambda path: path.name.lower(),
-    )
+def iter_image_paths(folder: Path, sort_by: str) -> list[Path]:
+    paths = [
+        path for path in folder.iterdir() if path.is_file() and path.suffix.lower() in IMAGE_EXTENSIONS
+    ]
+    if sort_by == "mtime":
+        # NavSim stores capture time in the extracted file mtime.  The hash
+        # filename itself has no temporal meaning.  Name is only a tie-breaker
+        # because this shard preserves mtime at one-second resolution.
+        return sorted(paths, key=lambda path: (path.stat().st_mtime_ns, path.name.lower()))
+    return sorted(paths, key=lambda path: path.name.lower())
 
 
 def is_image_sequence(path: Path) -> bool:
@@ -97,11 +107,11 @@ def is_image_sequence(path: Path) -> bool:
 
 
 def iter_frames(
-    source: Path, directory_fps: float
+    source: Path, directory_fps: float, image_sort: str
 ) -> Iterator[tuple[int, np.ndarray, float, float]]:
     """Yield frame number, BGR image, source FPS, and frame-start timestamp."""
     if is_image_sequence(source):
-        paths = iter_image_paths(source)
+        paths = iter_image_paths(source, image_sort)
         if not paths:
             raise FileNotFoundError(f"No supported images found in {source}")
         for frame_id, image_path in enumerate(paths):
@@ -250,7 +260,9 @@ def main() -> int:
         )
         csv_writer.writeheader()
 
-        for frame_id, frame, source_fps, frame_start in iter_frames(args.input, args.fps):
+        for frame_id, frame, source_fps, frame_start in iter_frames(
+            args.input, args.fps, args.image_sort
+        ):
             if args.max_frames and frame_count >= args.max_frames:
                 break
             if output_writer is None:
@@ -318,6 +330,7 @@ def main() -> int:
     metrics = {
         "model": str(args.model),
         "input": str(args.input),
+        "image_sort": args.image_sort if args.input.is_dir() else None,
         "tracker": tracker,
         "classes": list(VRU_CLASSES),
         "frames": frame_count,

@@ -32,7 +32,7 @@ working.
 ## Requirements 2–7 — run the pipeline
 
 The NavSim mini dataset is image-only. The runner processes one camera folder
-as a frame sequence, writes an annotated MP4, and emits one CSV row per
+as a frame sequence ordered by file timestamp, writes an annotated MP4, and emits one CSV row per
 detection:
 
 ```powershell
@@ -40,6 +40,7 @@ cd D:\GIT\VRU_DET
 python task2_vru_tracking.py `
   --model D:\GIT\VRU_DET\session\yolo26n-bdd100k\weights\yolo26n-bdd100k-fp32.pt `
   --input D:\navsim_workspace\dataset\sensor_blobs\mini\2021.06.09.14.58.55_veh-35_01894_02311\CAM_F0 `
+  --image-sort mtime `
   --device 0 `
   --imgsz 640
 ```
@@ -86,8 +87,12 @@ python task2_vru_tracking.py `
 ```
 
 Because the NavSim filenames are hashes rather than timestamps, a camera
-folder is only a deterministic fallback sequence. For trustworthy temporal
-track IDs, provide a video recorded from the camera.
+folder must be ordered by file modification timestamp; this is now the default
+(`--image-sort mtime`). `--image-sort name` is available only for comparison
+and should not be used for ByteTrack on this shard. The timestamp is preserved
+at one-second resolution, so frames sharing the same second use the hash name
+as a deterministic tie-breaker. For highest-confidence temporal track IDs,
+provide a video recorded from the camera.
 
 ## Scope
 
