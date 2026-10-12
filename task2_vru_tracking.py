@@ -14,6 +14,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import pickle
 import time
 from pathlib import Path
 from typing import Iterable, Iterator
@@ -43,6 +44,17 @@ def parse_args() -> argparse.Namespace:
         choices=("mtime", "name"),
         default="mtime",
         help="Ordering for image folders: file timestamp (default) or filename",
+    )
+    parser.add_argument(
+        "--navsim-metadata",
+        type=Path,
+        default=None,
+        help="NavSim frame .pkl; uses cams.<camera>.data_path and exact timestamps",
+    )
+    parser.add_argument(
+        "--camera-name",
+        default="CAM_F0",
+        help="NavSim camera key used with --navsim-metadata",
     )
     parser.add_argument("--output-video", type=Path, default=Path("output/task2_vru_tracking.mp4"))
     parser.add_argument("--output-csv", type=Path, default=Path("output/task2_tracks.csv"))
@@ -107,20 +119,53 @@ def iter_image_paths(folder: Path, sort_by: str) -> list[Path]:
     return sorted(paths, key=lambda path: path.name.lower())
 
 
+def load_navsim_sequence(metadata: Path, folder: Path, camera_name: str) -> tuple[list[Path], list[int]]:
+    """Resolve image paths in the exact order stored by NavSim metadata."""
+    with metadata.open("rb") as handle:
+        records = pickle.load(handle)
+    paths: list[Path] = []
+    timestamps: list[int] = []
+    for record in records:
+        try:
+            relative_path = Path(record["cams"][camera_name]["data_path"])
+            image_path = folder / relative_path.name
+        except (KeyError, TypeError) as exc:
+            raise ValueError(f"Invalid NavSim metadata/camera: {metadata} / {camera_name}") from exc
+        if not image_path.is_file():
+            raise FileNotFoundError(f"NavSim metadata points to missing image: {image_path}")
+        paths.append(image_path)
+        timestamps.append(int(record["timestamp"]))
+    if not paths:
+        raise ValueError(f"No frames found in NavSim metadata: {metadata}")
+    return paths, timestamps
+
+
 def is_image_sequence(path: Path) -> bool:
     return path.is_dir()
 
 
 def iter_frames(
-    source: Path, directory_fps: float, image_sort: str
+    source: Path,
+    directory_fps: float,
+    image_sort: str,
+    navsim_metadata: Path | None = None,
+    camera_name: str = "CAM_F0",
 ) -> Iterator[tuple[int, np.ndarray, float, float]]:
     """Yield frame number, BGR image, source FPS, and frame-start timestamp."""
     if is_image_sequence(source):
-        paths = iter_image_paths(source, image_sort)
+        timestamps: list[int] = []
+        if navsim_metadata is not None:
+            paths, timestamps = load_navsim_sequence(navsim_metadata, source, camera_name)
+        else:
+            paths = iter_image_paths(source, image_sort)
         if not paths:
             raise FileNotFoundError(f"No supported images found in {source}")
         output_fps = directory_fps
-        if output_fps <= 0 and image_sort == "mtime" and len(paths) > 1:
+        if output_fps <= 0 and timestamps and len(timestamps) > 1:
+            elapsed = (timestamps[-1] - timestamps[0]) / 1_000_000.0
+            if elapsed > 0:
+                output_fps = (len(paths) - 1) / elapsed
+        elif output_fps <= 0 and image_sort == "mtime" and len(paths) > 1:
             elapsed = paths[-1].stat().st_mtime - paths[0].stat().st_mtime
             if elapsed > 0:
                 output_fps = (len(paths) - 1) / elapsed
@@ -233,6 +278,8 @@ def main() -> int:
     args = parse_args()
     if not args.input.exists():
         raise FileNotFoundError(f"Input does not exist: {args.input}")
+    if args.navsim_metadata is not None and not args.navsim_metadata.is_file():
+        raise FileNotFoundError(f"NavSim metadata does not exist: {args.navsim_metadata}")
     if args.delay_ms < 0:
         raise ValueError("--delay-ms must be >= 0")
     args.output_video.parent.mkdir(parents=True, exist_ok=True)
@@ -273,7 +320,11 @@ def main() -> int:
         csv_writer.writeheader()
 
         for frame_id, frame, source_fps, frame_start in iter_frames(
-            args.input, args.fps, args.image_sort
+            args.input,
+            args.fps,
+            args.image_sort,
+            args.navsim_metadata,
+            args.camera_name,
         ):
             if args.max_frames and frame_count >= args.max_frames:
                 break
@@ -343,6 +394,8 @@ def main() -> int:
         "model": str(args.model),
         "input": str(args.input),
         "image_sort": args.image_sort if args.input.is_dir() else None,
+        "navsim_metadata": str(args.navsim_metadata) if args.navsim_metadata else None,
+        "camera_name": args.camera_name if args.navsim_metadata else None,
         "tracker": tracker,
         "classes": list(VRU_CLASSES),
         "frames": frame_count,

@@ -39,6 +39,14 @@ For image folders, `--fps 0` (the default) infers the output-video FPS from
 the file timestamps. Use an explicit positive `--fps` only when the desired
 playback speed is different from the recorded timeline.
 
+For NavSim, prefer the metadata order because file mtimes have only one-second
+resolution and hash filenames are not temporal:
+
+```powershell
+  --navsim-metadata D:\navsim_workspace\dataset\navsim_logs\mini\2021.06.09.14.58.55_veh-35_01894_02311.pkl `
+  --camera-name CAM_F0
+```
+
 ```powershell
 cd D:\GIT\VRU_DET
 python task2_vru_tracking.py `
@@ -97,6 +105,24 @@ and should not be used for ByteTrack on this shard. The timestamp is preserved
 at one-second resolution, so frames sharing the same second use the hash name
 as a deterministic tie-breaker. For highest-confidence temporal track IDs,
 provide a video recorded from the camera.
+
+## GT-based VRU evaluation
+
+After running with the NavSim metadata order, evaluate only GT
+`pedestrian`/`bicycle` (the local GT has no separate `rider`/`motorcycle` label):
+
+```powershell
+.\.venv\Scripts\python.exe .\evaluate_vru_metrics.py `
+  --pred-csv output\task2_cam_f0_canonical.csv `
+  --metadata D:\navsim_workspace\dataset\navsim_logs\mini\2021.06.09.14.58.55_veh-35_01894_02311.pkl `
+  --sensor-root D:\navsim_workspace\dataset\sensor_blobs\mini `
+  --camera-name CAM_F0 `
+  --iou-threshold 0.5
+```
+
+The evaluator projects 3D GT boxes into the camera, matches predictions by
+class and IoU, and writes detection metrics plus MOTA, IDF1, and ID switches
+to `output/task2_vru_evaluation.json` and `.md`.
 
 ## Scope
 
