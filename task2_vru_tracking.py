@@ -62,7 +62,12 @@ def parse_args() -> argparse.Namespace:
         help="Inference size: one value for square or HEIGHT WIDTH for rectangular ONNX",
     )
     parser.add_argument("--device", default=None, help="Ultralytics device, e.g. 0, cuda:0, or cpu")
-    parser.add_argument("--fps", type=float, default=20.0, help="FPS used for an image directory")
+    parser.add_argument(
+        "--fps",
+        type=float,
+        default=0.0,
+        help="FPS for an image directory; 0 infers it from mtime (default)",
+    )
     parser.add_argument("--max-frames", type=int, default=0, help="0 means process all frames")
     parser.add_argument("--show", action="store_true", help="Display the annotated stream")
     parser.add_argument(
@@ -114,11 +119,18 @@ def iter_frames(
         paths = iter_image_paths(source, image_sort)
         if not paths:
             raise FileNotFoundError(f"No supported images found in {source}")
+        output_fps = directory_fps
+        if output_fps <= 0 and image_sort == "mtime" and len(paths) > 1:
+            elapsed = paths[-1].stat().st_mtime - paths[0].stat().st_mtime
+            if elapsed > 0:
+                output_fps = (len(paths) - 1) / elapsed
+        if output_fps <= 0:
+            output_fps = 20.0
         for frame_id, image_path in enumerate(paths):
             frame_start = time.perf_counter()
             frame = cv2.imread(str(image_path), cv2.IMREAD_COLOR)
             if frame is not None:
-                yield frame_id, frame, directory_fps, frame_start
+                yield frame_id, frame, output_fps, frame_start
         return
 
     capture = cv2.VideoCapture(str(source))

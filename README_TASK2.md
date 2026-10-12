@@ -35,6 +35,10 @@ The NavSim mini dataset is image-only. The runner processes one camera folder
 as a frame sequence ordered by file timestamp, writes an annotated MP4, and emits one CSV row per
 detection:
 
+For image folders, `--fps 0` (the default) infers the output-video FPS from
+the file timestamps. Use an explicit positive `--fps` only when the desired
+playback speed is different from the recorded timeline.
+
 ```powershell
 cd D:\GIT\VRU_DET
 python task2_vru_tracking.py `
