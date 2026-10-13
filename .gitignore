@@ -1,6 +1,10 @@
 .venv/
 csp.pytorch/
 session/yolo26n-bdd100k/
+session/yolo26m-kitti/
+session/yolo26m-nuimages-5ep/
+task2_yolo26n/results/frames/
+task3_yolo26m/**/results/frames/
 __pycache__/
 *.py[cod]
 output/

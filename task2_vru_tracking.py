@@ -1,4 +1,4 @@
-"""Task 2: VRU detection and tracking with Ultralytics + ByteTrack.
+"""VRU detection and tracking with Ultralytics + ByteTrack.
 
 The detector is loaded from an external YOLO26n-BDD100K checkpoint.  This
 runner intentionally does not change the model architecture: switching from
@@ -27,7 +27,7 @@ DEFAULT_INPUT = Path(
     r"D:\navsim_workspace\dataset\sensor_blobs\mini\2021.06.09.14.58.55_veh-35_01894_02311\CAM_F0"
 )
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
-VRU_CLASSES = ("person", "rider", "bicycle", "motorcycle")
+DEFAULT_VRU_CLASSES = ("person", "rider", "bicycle", "motorcycle")
 
 
 def parse_args() -> argparse.Namespace:
@@ -59,6 +59,22 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-video", type=Path, default=Path("output/task2_vru_tracking.mp4"))
     parser.add_argument("--output-csv", type=Path, default=Path("output/task2_tracks.csv"))
     parser.add_argument("--metrics-json", type=Path, default=Path("output/task2_metrics.json"))
+    parser.add_argument(
+        "--classes",
+        default=",".join(DEFAULT_VRU_CLASSES),
+        help="Comma-separated model class names to track (default: Task 2 VRU classes)",
+    )
+    parser.add_argument(
+        "--csv-format",
+        choices=("bbox", "xyxy"),
+        default="bbox",
+        help="CSV schema: bbox keeps Task 2 compatibility; xyxy writes x1,y1,x2,y2",
+    )
+    parser.add_argument(
+        "--no-video",
+        action="store_true",
+        help="Do not create an annotated video; use with --save-frames-dir for frame-only delivery",
+    )
     parser.add_argument(
         "--tracker",
         default="bytetrack",
@@ -197,16 +213,23 @@ def iter_frames(
         capture.release()
 
 
-def load_class_ids(model) -> list[int]:
+def parse_class_names(value: str) -> tuple[str, ...]:
+    classes = tuple(item.strip().lower() for item in value.split(",") if item.strip())
+    if not classes:
+        raise ValueError("--classes must contain at least one class name")
+    return classes
+
+
+def load_class_ids(model, target_classes: tuple[str, ...]) -> list[int]:
     names = model.names
     if isinstance(names, dict):
         name_by_id = {int(index): str(name).lower() for index, name in names.items()}
     else:
         name_by_id = {index: str(name).lower() for index, name in enumerate(names)}
-    missing = [name for name in VRU_CLASSES if name not in name_by_id.values()]
+    missing = [name for name in target_classes if name not in name_by_id.values()]
     if missing:
         raise RuntimeError(f"Model does not provide required classes: {', '.join(missing)}")
-    return [index for index, name in name_by_id.items() if name in VRU_CLASSES]
+    return [index for index, name in name_by_id.items() if name in target_classes]
 
 
 def sync_cuda(device: object) -> None:
@@ -276,13 +299,15 @@ def draw_tracks(frame: np.ndarray, result, names: dict[int, str]) -> list[dict[s
 
 def main() -> int:
     args = parse_args()
+    target_classes = parse_class_names(args.classes)
     if not args.input.exists():
         raise FileNotFoundError(f"Input does not exist: {args.input}")
     if args.navsim_metadata is not None and not args.navsim_metadata.is_file():
         raise FileNotFoundError(f"NavSim metadata does not exist: {args.navsim_metadata}")
     if args.delay_ms < 0:
         raise ValueError("--delay-ms must be >= 0")
-    args.output_video.parent.mkdir(parents=True, exist_ok=True)
+    if not args.no_video:
+        args.output_video.parent.mkdir(parents=True, exist_ok=True)
     args.output_csv.parent.mkdir(parents=True, exist_ok=True)
     args.metrics_json.parent.mkdir(parents=True, exist_ok=True)
     if args.save_frames_dir is not None:
@@ -296,7 +321,7 @@ def main() -> int:
         ) from exc
 
     model = YOLO(str(args.model))
-    class_ids = load_class_ids(model)
+    class_ids = load_class_ids(model, target_classes)
     names = model.names if isinstance(model.names, dict) else dict(enumerate(model.names))
     names = {int(index): str(name) for index, name in names.items()}
     tracker = resolve_tracker(args.tracker)
@@ -313,10 +338,9 @@ def main() -> int:
 
     try:
         csv_file = args.output_csv.open("w", newline="", encoding="utf-8")
-        csv_writer = csv.DictWriter(
-            csv_file,
-            fieldnames=["frame_id", "track_id", "class", "confidence", "bbox"],
-        )
+        fieldnames = ["frame_id", "track_id", "class", "confidence"]
+        fieldnames += ["bbox"] if args.csv_format == "bbox" else ["x1", "y1", "x2", "y2"]
+        csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         csv_writer.writeheader()
 
         for frame_id, frame, source_fps, frame_start in iter_frames(
@@ -328,7 +352,7 @@ def main() -> int:
         ):
             if args.max_frames and frame_count >= args.max_frames:
                 break
-            if output_writer is None:
+            if output_writer is None and not args.no_video:
                 height, width = frame.shape[:2]
                 output_writer = cv2.VideoWriter(
                     str(args.output_video),
@@ -358,17 +382,20 @@ def main() -> int:
             result = results[0]
             records = draw_tracks(frame, result, names)
             for record in records:
-                csv_writer.writerow(
-                    {
-                        "frame_id": frame_id,
-                        "track_id": record["track_id"],
-                        "class": record["class"],
-                        "confidence": f"{record['confidence']:.6f}",
-                        "bbox": json.dumps(record["bbox"], separators=(",", ":")),
-                    }
-                )
+                row = {
+                    "frame_id": frame_id,
+                    "track_id": record["track_id"],
+                    "class": record["class"],
+                    "confidence": f"{record['confidence']:.6f}",
+                }
+                if args.csv_format == "bbox":
+                    row["bbox"] = json.dumps(record["bbox"], separators=(",", ":"))
+                else:
+                    row.update(dict(zip(("x1", "y1", "x2", "y2"), record["bbox"])))
+                csv_writer.writerow(row)
             detection_count += len(records)
-            output_writer.write(frame)
+            if output_writer is not None:
+                output_writer.write(frame)
             frame_count += 1
             end_to_end_ms.append((time.perf_counter() - frame_start) * 1000.0)
 
@@ -394,10 +421,11 @@ def main() -> int:
         "model": str(args.model),
         "input": str(args.input),
         "image_sort": args.image_sort if args.input.is_dir() else None,
+        "frame_order": "navsim_metadata" if args.navsim_metadata else args.image_sort if args.input.is_dir() else "video_decode",
         "navsim_metadata": str(args.navsim_metadata) if args.navsim_metadata else None,
         "camera_name": args.camera_name if args.navsim_metadata else None,
         "tracker": tracker,
-        "classes": list(VRU_CLASSES),
+        "classes": list(target_classes),
         "frames": frame_count,
         "detections": detection_count,
         "inference_latency_ms": {
@@ -411,10 +439,14 @@ def main() -> int:
             "p95": percentile(end_to_end_ms, 95),
         },
         "effective_fps": frame_count / elapsed_s if frame_count else 0.0,
+        "video_written": not args.no_video,
+        "frames_directory": str(args.save_frames_dir) if args.save_frames_dir else None,
+        "csv_format": args.csv_format,
     }
     args.metrics_json.write_text(json.dumps(metrics, indent=2), encoding="utf-8")
     print(json.dumps(metrics, indent=2))
-    print(f"Saved video: {args.output_video}")
+    if not args.no_video:
+        print(f"Saved video: {args.output_video}")
     print(f"Saved CSV:   {args.output_csv}")
     print(f"Saved stats: {args.metrics_json}")
     return 0

@@ -1,0 +1,29 @@
+{
+  "model": "D:\\GIT\\VRU_Det\\session\\yolo26m-kitti\\best.pt",
+  "input": "D:\\navsim_workspace\\dataset\\sensor_blobs\\mini\\2021.06.09.14.58.55_veh-35_01894_02311\\CAM_F0",
+  "image_sort": "mtime",
+  "frame_order": "navsim_metadata",
+  "navsim_metadata": "D:\\navsim_workspace\\dataset\\navsim_logs\\mini\\2021.06.09.14.58.55_veh-35_01894_02311.pkl",
+  "camera_name": "CAM_F0",
+  "tracker": "bytetrack.yaml",
+  "classes": [
+    "pedestrian",
+    "cyclist"
+  ],
+  "frames": 834,
+  "detections": 256,
+  "inference_latency_ms": {
+    "mean": 20.903366546320218,
+    "p50": 18.56539999425877,
+    "p95": 20.700345003569964
+  },
+  "end_to_end_latency_ms": {
+    "mean": 44.2600862109602,
+    "p50": 38.20270001597237,
+    "p95": 50.17945999861693
+  },
+  "effective_fps": 20.28306451422839,
+  "video_written": false,
+  "frames_directory": "D:\\GIT\\VRU_Det\\task3_yolo26m\\results\\frames",
+  "csv_format": "xyxy"
+}

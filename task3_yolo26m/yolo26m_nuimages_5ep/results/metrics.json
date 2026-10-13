@@ -1,0 +1,28 @@
+{
+  "model": "D:\\GIT\\VRU_Det\\session\\yolo26m-nuimages-5ep\\best.pt",
+  "input": "D:\\navsim_workspace\\dataset\\sensor_blobs\\mini\\2021.06.09.14.58.55_veh-35_01894_02311\\CAM_F0",
+  "image_sort": "mtime",
+  "frame_order": "navsim_metadata",
+  "navsim_metadata": "D:\\navsim_workspace\\dataset\\navsim_logs\\mini\\2021.06.09.14.58.55_veh-35_01894_02311.pkl",
+  "camera_name": "CAM_F0",
+  "tracker": "bytetrack.yaml",
+  "classes": [
+    "pedestrian"
+  ],
+  "frames": 834,
+  "detections": 3928,
+  "inference_latency_ms": {
+    "mean": 36.17339724230691,
+    "p50": 32.28884999953152,
+    "p95": 38.06780500017339
+  },
+  "end_to_end_latency_ms": {
+    "mean": 67.70426534774751,
+    "p50": 59.34625000008964,
+    "p95": 78.56700500124133
+  },
+  "effective_fps": 13.24731248682178,
+  "video_written": false,
+  "frames_directory": "D:\\GIT\\VRU_Det\\task3_yolo26m\\yolo26m_nuimages_5ep\\results\\frames",
+  "csv_format": "xyxy"
+}

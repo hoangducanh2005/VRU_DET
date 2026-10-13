@@ -1,0 +1,83 @@
+{
+  "metadata": "D:\\navsim_workspace\\dataset\\navsim_logs\\mini\\2021.06.09.14.58.55_veh-35_01894_02311.pkl",
+  "pred_csv": "D:\\GIT\\VRU_Det\\task3_yolo26m\\results\\tracks.csv",
+  "camera": "CAM_F0",
+  "iou_threshold": 0.5,
+  "image_shape": {
+    "height": 1080,
+    "width": 1920
+  },
+  "frames": 834,
+  "timestamp_fps": 1.9999955918464505,
+  "prediction_to_gt_class": {
+    "pedestrian": "pedestrian",
+    "cyclist": "bicycle"
+  },
+  "scored_gt_classes": [
+    "pedestrian",
+    "bicycle"
+  ],
+  "ignored_gt_boxes_other_classes": 80497,
+  "projected_gt_boxes": 3004,
+  "ignored_prediction_classes": {},
+  "detection": {
+    "GT": 3004,
+    "predictions": 256,
+    "TP": 65,
+    "FP": 191,
+    "FN": 2939,
+    "precision": 0.25390625,
+    "recall": 0.021637816245006658,
+    "F1": 0.03987730061349693,
+    "AP_at_iou": 0.008221333879669118,
+    "mean_IoU_TP": 0.5881809504468688
+  },
+  "per_class": {
+    "pedestrian": {
+      "gt": 2995,
+      "pred": 253,
+      "TP": 65,
+      "FP": 188,
+      "FN": 2930,
+      "precision": 0.25691699604743085,
+      "recall": 0.021702838063439065,
+      "F1": 0.040024630541871914,
+      "AP": 0.008270622555698437,
+      "mean_IoU": 0.5881809504468688
+    },
+    "bicycle": {
+      "gt": 9,
+      "pred": 3,
+      "TP": 0,
+      "FP": 3,
+      "FN": 9,
+      "precision": 0.0,
+      "recall": 0.0,
+      "F1": 0.0,
+      "AP": 0.0,
+      "mean_IoU": 0.0
+    }
+  },
+  "tracking": {
+    "IDTP": 23,
+    "IDFP": 233,
+    "IDFN": 2981,
+    "IDF1": 0.01411042944785276,
+    "GT": 3004,
+    "predictions": 256,
+    "FP": 191,
+    "FN": 2939,
+    "ID_switches": 1,
+    "MOTA": -0.04227696404793613,
+    "ID_precision": 0.08984375,
+    "ID_recall": 0.007656458055925432,
+    "unique_gt_track_tokens": 318,
+    "unique_prediction_track_ids": 17,
+    "matched_gt_track_tokens": 12,
+    "matched_prediction_track_ids": 11,
+    "tracked_prediction_detections": 110,
+    "untracked_prediction_detections": 146,
+    "untracked_matches": 39,
+    "track_id_coverage": 0.4296875
+  }
+}

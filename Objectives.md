@@ -42,3 +42,28 @@ Triển khai **VRU Detection & Tracking** sử dụng model [YOLO26n-BDD100K](ht
 **Ưu tiên:** GPU nếu có, latency thấp, tracking ổn định, không chỉnh sửa kiến trúc model gốc. Kiểm tra cấu trúc repo và checkpoint trước khi triển khai.
 **Dataset:** Shard 5 navsim mini ở local : D:\navsim_workspace\dataset\sensor_blobs\mini\2021.06.09.14.58.55_veh-35_01894_02311
 **Side**: hướng dẫn tôi tự làm yêu cầu 1.
+
+
+------------------------------------------------------------
+Task 3 : 
+Triển khai **VRU Detection & Tracking** bằng YOLO26m cho bài toán Autonomous Driving.
+
+**Yêu cầu:**
+0. Gom code, kết quả của từng model vào các thư mục khác nhau ( YOLO26n và metrics của nó riêng, 26m riêng)
+1. Sử dụng checkpoint pretrained **YOLO26m-KITTI**: https://huggingface.co/dronefreak/kitti-yolo26m (ưu tiên) hoặc YOLO26m-COCO.
+2. Tải weights, cài dependencies và cấu hình GPU/CUDA.
+3. Chạy inference trên video/dataset có sẵn trong máy, **không training/fine-tuning**.
+4. Detect các class VRU: `Pedestrian`, `Cyclist` (tùy checkpoint).
+5. Tích hợp **ByteTrack** để duy trì `track_id` qua các frame.
+6. Visualize bounding box, class, confidence, track ID;
+7. Lưu CSV: `[frame_id, track_id, class, confidence, x1, y1, x2, y2]`.
+8. Đo FPS, inference latency và end-to-end latency (ms/frame).
+9. So sánh YOLO26m với YOLO26n đã triển khai trên cùng video: chất lượng detection, số trường hợp bỏ sót VRU, FPS và latency. ( để sau chưa cần làm)
+
+**Deliverables**
+- Chạy inference , lưu 1 folder chứa các frame ảnh đã visualize, không cần ghép thành video. 
+- Các frame phải liên tiếp nhau, tránh khác hẳn timestamp như đợt chạy task2. 
+- Đưa ra evidence score hệt như task2_vru_detection.md 
+
+
+**Lưu ý:** Giữ nguyên cấu trúc project hiện tại, tái sử dụng pipeline tracking, chỉ thay model/checkpoint. Không tự động thay đổi dataset hoặc code không liên quan. Ưu tiên độ chính xác VRU và tracking ổn định, đồng thời đảm bảo latency thấp.

@@ -37,22 +37,43 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--sensor-root", type=Path, default=DEFAULT_SENSOR_ROOT)
     parser.add_argument("--camera-name", default="CAM_F0")
     parser.add_argument("--iou-threshold", type=float, default=0.5)
+    parser.add_argument(
+        "--class-map",
+        default="person:pedestrian,bicycle:bicycle",
+        help="Prediction-to-GT map, e.g. Pedestrian:pedestrian,Cyclist:bicycle",
+    )
     parser.add_argument("--output-json", type=Path, default=Path("output/task2_vru_evaluation.json"))
     parser.add_argument("--output-report", type=Path, default=Path("output/task2_vru_evaluation.md"))
     return parser.parse_args()
 
 
-def load_predictions(path: Path) -> dict[int, list[dict[str, Any]]]:
+def parse_class_map(value: str) -> dict[str, str]:
+    result: dict[str, str] = {}
+    for item in value.split(","):
+        pair = [part.strip().lower() for part in item.split(":", 1)]
+        if len(pair) != 2 or not pair[0] or not pair[1]:
+            raise ValueError(f"Invalid --class-map item: {item!r}")
+        result[pair[0]] = pair[1]
+    if not result:
+        raise ValueError("--class-map must contain at least one prediction:gt pair")
+    return result
+
+
+def load_predictions(path: Path, pred_to_gt: dict[str, str]) -> dict[int, list[dict[str, Any]]]:
     predictions: dict[int, list[dict[str, Any]]] = defaultdict(list)
     with path.open("r", newline="", encoding="utf-8") as handle:
         for row in csv.DictReader(handle):
             class_name = row["class"].strip().lower()
+            if "bbox" in row:
+                bbox = np.asarray(json.loads(row["bbox"]), dtype=np.float64)
+            else:
+                bbox = np.asarray([float(row[key]) for key in ("x1", "y1", "x2", "y2")], dtype=np.float64)
             prediction = {
                 "class": class_name,
-                "gt_class": PRED_TO_GT.get(class_name),
+                "gt_class": pred_to_gt.get(class_name),
                 "track_id": str(row["track_id"]),
                 "confidence": float(row["confidence"]),
-                "bbox": np.asarray(json.loads(row["bbox"]), dtype=np.float64),
+                "bbox": bbox,
             }
             predictions[int(row["frame_id"])].append(prediction)
     return predictions
@@ -235,7 +256,9 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
     if not args.pred_csv.is_file():
         raise FileNotFoundError(args.pred_csv)
     records = load_metadata(args.metadata)
-    predictions = load_predictions(args.pred_csv)
+    pred_to_gt = parse_class_map(args.class_map)
+    gt_to_pred = {gt_class: pred_class for pred_class, gt_class in pred_to_gt.items()}
+    predictions = load_predictions(args.pred_csv, pred_to_gt)
     first_image = resolve_image(args.sensor_root, records[0]["cams"][args.camera_name]["data_path"])
     image = cv2.imread(str(first_image), cv2.IMREAD_COLOR)
     if image is None:
@@ -253,9 +276,16 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
     score_tp: list[bool] = []
     pair_counts: Counter[tuple[str, str]] = Counter()
     last_prediction_for_gt: dict[str, str] = {}
+    gt_track_ids_seen: set[str] = set()
+    prediction_track_ids_seen: set[str] = set()
+    matched_gt_track_ids: set[str] = set()
+    matched_prediction_track_ids: set[str] = set()
+    tracked_prediction_detections = 0
+    untracked_prediction_detections = 0
+    identity_untracked_matches = 0
     per_class: dict[str, dict[str, Any]] = {
         gt_class: {"gt": 0, "pred": 0, "TP": 0, "FP": 0, "FN": 0, "ious": [], "scores": [], "score_tp": []}
-        for gt_class in GT_TO_PRED
+        for gt_class in gt_to_pred
     }
     projected_boxes = 0
     ignored_gt_boxes = 0
@@ -269,13 +299,14 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
         track_tokens = [str(token) for token in anns.get("track_tokens", [])]
         gt_by_class: dict[str, list[dict[str, Any]]] = defaultdict(list)
         for box, name, track_token in zip(boxes, names, track_tokens):
-            if name not in GT_TO_PRED:
+            if name not in gt_to_pred:
                 ignored_gt_boxes += 1
                 continue
             projected = project_box(box, camera, image_shape)
             if projected is None:
                 continue
             projected_boxes += 1
+            gt_track_ids_seen.add(track_token)
             gt_by_class[name].append({"bbox": projected, "track_id": track_token})
 
         eligible_predictions: list[dict[str, Any]] = []
@@ -283,9 +314,14 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
             if prediction["gt_class"] is None:
                 ignored_predictions[prediction["class"]] += 1
             else:
+                if prediction["track_id"] == "-1":
+                    untracked_prediction_detections += 1
+                else:
+                    tracked_prediction_detections += 1
+                    prediction_track_ids_seen.add(prediction["track_id"])
                 eligible_predictions.append(prediction)
 
-        for gt_class, pred_class in GT_TO_PRED.items():
+        for gt_class, pred_class in gt_to_pred.items():
             gts = gt_by_class[gt_class]
             preds = sorted((p for p in eligible_predictions if p["gt_class"] == gt_class), key=lambda p: -p["confidence"])
             per_class[gt_class]["gt"] += len(gts)
@@ -310,10 +346,15 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
                     per_class[gt_class]["ious"].append(best_iou)
                     score_tp.append(True)
                     per_class[gt_class]["score_tp"].append(True)
-                    pair_counts[(gt_id, prediction["track_id"])] += 1
-                    if gt_id in last_prediction_for_gt and last_prediction_for_gt[gt_id] != prediction["track_id"]:
-                        id_switches += 1
-                    last_prediction_for_gt[gt_id] = prediction["track_id"]
+                    if prediction["track_id"] == "-1":
+                        identity_untracked_matches += 1
+                    else:
+                        pair_counts[(gt_id, prediction["track_id"])] += 1
+                        matched_gt_track_ids.add(gt_id)
+                        matched_prediction_track_ids.add(prediction["track_id"])
+                        if gt_id in last_prediction_for_gt and last_prediction_for_gt[gt_id] != prediction["track_id"]:
+                            id_switches += 1
+                        last_prediction_for_gt[gt_id] = prediction["track_id"]
                 else:
                     false_positive += 1
                     per_class[gt_class]["FP"] += 1
@@ -350,6 +391,16 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
             "FN": false_negative,
             "ID_switches": id_switches,
             "MOTA": 1.0 - (false_positive + false_negative + id_switches) / total_gt if total_gt else 0.0,
+            "ID_precision": tracking["IDTP"] / (tracking["IDTP"] + tracking["IDFP"]) if tracking["IDTP"] + tracking["IDFP"] else 0.0,
+            "ID_recall": tracking["IDTP"] / (tracking["IDTP"] + tracking["IDFN"]) if tracking["IDTP"] + tracking["IDFN"] else 0.0,
+            "unique_gt_track_tokens": len(gt_track_ids_seen),
+            "unique_prediction_track_ids": len(prediction_track_ids_seen),
+            "matched_gt_track_tokens": len(matched_gt_track_ids),
+            "matched_prediction_track_ids": len(matched_prediction_track_ids),
+            "tracked_prediction_detections": tracked_prediction_detections,
+            "untracked_prediction_detections": untracked_prediction_detections,
+            "untracked_matches": identity_untracked_matches,
+            "track_id_coverage": tracked_prediction_detections / total_pred if total_pred else 0.0,
         }
     )
     timestamps = [int(record["timestamp"]) for record in records]
@@ -361,7 +412,8 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
         "image_shape": {"height": image_shape[0], "width": image_shape[1]},
         "frames": len(records),
         "timestamp_fps": (len(timestamps) - 1) / ((timestamps[-1] - timestamps[0]) / 1e6),
-        "scored_gt_classes": list(GT_TO_PRED),
+        "prediction_to_gt_class": pred_to_gt,
+        "scored_gt_classes": list(gt_to_pred),
         "ignored_gt_boxes_other_classes": ignored_gt_boxes,
         "projected_gt_boxes": projected_boxes,
         "ignored_prediction_classes": dict(ignored_predictions),
