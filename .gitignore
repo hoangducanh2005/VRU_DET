@@ -10,3 +10,7 @@ __pycache__/
 output/
 *.hdf5
 *.h5
+
+task3_yolo26m/yolo26m_nuimages_20ep/results/navsim_shard1_8cam/montage_frames/
+task3_yolo26m/yolo26m_nuimages_20ep/results/nuimages_val/visualized_frames/
+task3_yolo26m/yolo26m_nuimages_20ep/results/nuimages_val/validation/

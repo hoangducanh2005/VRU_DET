@@ -1,0 +1,36 @@
+{
+  "weights": "/home/anhhd/Downloads/Datasets/nuimages/runs/detect/runs/detect/runs/pedestrian/yolo26m_nuimages/weights/best.pt",
+  "data": "/home/anhhd/Downloads/Datasets/nuimages_yolo/data.yaml",
+  "input": "/home/anhhd/Downloads/Datasets/nuimages_yolo/val/images",
+  "split": "val",
+  "images": 16445,
+  "class_names": {
+    "0": "pedestrian"
+  },
+  "imgsz": 640,
+  "batch": 16,
+  "device": "cuda:0",
+  "validation_confidence": "Ultralytics validation operating point",
+  "validation_elapsed_seconds": 156.39715475898993,
+  "metrics": {
+    "metrics/precision(B)": 0.8210750583864346,
+    "metrics/recall(B)": 0.6085312327361485,
+    "metrics/mAP50(B)": 0.7098027379070999,
+    "metrics/mAP50-95(B)": 0.40779165999662326,
+    "fitness": 0.40779165999662326
+  },
+  "validation_speed_ms_per_image": {
+    "preprocess": 0.16711205771632096,
+    "inference": 7.694530288844791,
+    "loss": 0.0003416239581016756,
+    "postprocess": 0.25473398532150393
+  },
+  "visualized_images": 16445,
+  "prediction_confidence_threshold": 0.25,
+  "prediction_elapsed_seconds": 185.54770606401144,
+  "training_lineage": "5-epoch nuImages checkpoint followed by 15 additional fine-tuning epochs",
+  "initial_checkpoint_training_epochs": 5,
+  "additional_finetuning_epochs": 15,
+  "cumulative_training_epochs": 20,
+  "checkpoint_train_args_epochs": 15
+}
