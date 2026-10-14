@@ -1,0 +1,229 @@
+(base) anhhd@anhhd-Cyborg-15-Max-C13WF:~$ conda activate ai_env
+(ai_env) anhhd@anhhd-Cyborg-15-Max-C13WF:~$ cd /home/anhhd/Downloads/Datasets/nuimages
+(ai_env) anhhd@anhhd-Cyborg-15-Max-C13WF:~/Downloads/Datasets/nuimages$ python train.py 
+Downloading https://github.com/ultralytics/assets/releases/download/v8.4.0/yolo2…: 100% ━━━━━━━━━━━━ 42.2MB 8.8MB/s 4.8s
+Ultralytics 8.4.175 🚀 Python-3.10.21 torch-2.11.0+cu128 CUDA:0 (NVIDIA GeForce RTX 5060 Laptop GPU, 7708MiB)
+engine/trainer: agnostic_nms=False, amp=True, angle=1.0, augment=False, auto_augment=randaugment, batch=4, bgr=0.0, box=7.5, cache=False, cfg=None, channels_last=None, classes=None, close_mosaic=10, cls=0.5, cls_pw=0.0, cls_remap=True, compile=False, conf=None, copy_paste=0.0, copy_paste_mode=flip, cos_lr=False, cutmix=0.0, data=/home/anhhd/Downloads/Datasets/nuimages_yolo/data.yaml, degrees=0.0, deterministic=True, device=0, dfl=1.5, dgrad=0.5, dis=6.0, distill_model=None, dlam=1.0, dlog=1.0, dnn=False, dropout=0.0, dynamic=False, embed=None, epochs=5, erasing=0.4, exist_ok=False, fliplr=0.5, flipud=0.0, format=torchscript, fraction=1.0, freeze=None, hsv_h=0.015, hsv_s=0.7, hsv_v=0.4, imgsz=640, iou=0.7, kobj=1.0, line_width=None, lr0=0.01, lrf=0.01, mask_ratio=4, max_det=300, mixup=0.0, mode=train, model=yolo26m.pt, momentum=0.937, mosaic=1.0, multi_scale=0.0, name=yolo26m_nuimages, nbs=64, nms=None, opset=None, optimize=False, optimizer=auto, overlap_mask=True, patience=15, perspective=0.0, plots=True, pose=12.0, pretrained=True, profile=False, project=runs/pedestrian, quantize=None, rect=False, resume=False, retina_masks=False, rle=1.0, save=True, save_conf=False, save_crop=False, save_dir=/home/anhhd/Downloads/Datasets/nuimages/runs/detect/runs/pedestrian/yolo26m_nuimages, save_frames=False, save_json=False, save_period=5, save_txt=False, scale=0.5, seed=0, shear=0.0, show=False, show_boxes=True, show_conf=True, show_labels=True, simplify=True, single_cls=False, source=None, split=val, stream_buffer=False, task=detect, time=None, tracker=tracktrack.yaml, translate=0.1, val=True, verbose=True, vid_stride=1, visualize=False, warmup_bias_lr=0.1, warmup_epochs=3.0, warmup_momentum=0.8, weight_decay=0.0005, workers=4, workspace=None
+Downloading https://ultralytics.com/assets/Arial.ttf to '/home/anhhd/.config/Ul…: 100% ━━━━━━━━━━━━ 755.1KB 1.7MB/s 0.4s
+Overriding model.yaml nc=80 with nc=1
+
+                   from  n    params  module                                       arguments                     
+  0                  -1  1      1856  ultralytics.nn.modules.conv.Conv             [3, 64, 3, 2]                 
+  1                  -1  1     73984  ultralytics.nn.modules.conv.Conv             [64, 128, 3, 2]               
+  2                  -1  1    111872  ultralytics.nn.modules.block.C3k2            [128, 256, 1, True, 0.25]     
+  3                  -1  1    590336  ultralytics.nn.modules.conv.Conv             [256, 256, 3, 2]              
+  4                  -1  1    444928  ultralytics.nn.modules.block.C3k2            [256, 512, 1, True, 0.25]     
+  5                  -1  1   2360320  ultralytics.nn.modules.conv.Conv             [512, 512, 3, 2]              
+  6                  -1  1   1380352  ultralytics.nn.modules.block.C3k2            [512, 512, 1, True]           
+  7                  -1  1   2360320  ultralytics.nn.modules.conv.Conv             [512, 512, 3, 2]              
+  8                  -1  1   1380352  ultralytics.nn.modules.block.C3k2            [512, 512, 1, True]           
+  9                  -1  1    656896  ultralytics.nn.modules.block.SPPF            [512, 512, 5, 3, True]        
+ 10                  -1  1    990976  ultralytics.nn.modules.block.C2PSA           [512, 512, 1]                 
+ 11                  -1  1         0  torch.nn.modules.upsampling.Upsample         [None, 2, 'nearest']          
+ 12             [-1, 6]  1         0  ultralytics.nn.modules.conv.Concat           [1]                           
+ 13                  -1  1   1642496  ultralytics.nn.modules.block.C3k2            [1024, 512, 1, True]          
+ 14                  -1  1         0  torch.nn.modules.upsampling.Upsample         [None, 2, 'nearest']          
+ 15             [-1, 4]  1         0  ultralytics.nn.modules.conv.Concat           [1]                           
+ 16                  -1  1    542720  ultralytics.nn.modules.block.C3k2            [1024, 256, 1, True]          
+ 17                  -1  1    590336  ultralytics.nn.modules.conv.Conv             [256, 256, 3, 2]              
+ 18            [-1, 13]  1         0  ultralytics.nn.modules.conv.Concat           [1]                           
+ 19                  -1  1   1511424  ultralytics.nn.modules.block.C3k2            [768, 512, 1, True]           
+ 20                  -1  1   2360320  ultralytics.nn.modules.conv.Conv             [512, 512, 3, 2]              
+ 21            [-1, 10]  1         0  ultralytics.nn.modules.conv.Concat           [1]                           
+ 22                  -1  1   1974784  ultralytics.nn.modules.block.C3k2            [1024, 512, 1, True, 0.5, True]
+ 23        [16, 19, 22]  1   2800158  ultralytics.nn.modules.head.Detect           [1, 1, True, [256, 512, 512]] 
+YOLO26m summary: 280 layers, 21,774,430 parameters, 21,774,430 gradients, 75.0 GFLOPs
+
+Transferred 756/768 items from pretrained weights
+AMP: running Automatic Mixed Precision (AMP) checks...
+AMP: downloading yolo26n.pt for AMP checks (one-time, not used for training)...
+Downloading https://github.com/ultralytics/assets/releases/download/v8.4.0/yolo26…: 100% ━━━━━━━━━━━━ 5.3MB 5.9MB/s 0.9s
+AMP: checks passed ✅
+train: Fast image access ✅ (ping: 0.0±0.0 ms, read: 598.9±287.4 MB/s, size: 162.7 KB)
+train: Scanning /home/anhhd/Downloads/Datasets/nuimages_yolo/labels/train…: 100% ━━━━━━━━━━━━ 67279/67279 940.0it/s 1:12
+train: New cache created: /home/anhhd/Downloads/Datasets/nuimages_yolo/labels/train.cache
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 448.5±122.6 MB/s, size: 153.4 KB)
+val: Scanning /home/anhhd/Downloads/Datasets/nuimages_yolo/labels/val...…: 100% ━━━━━━━━━━━━ 16445/16445 885.2it/s 18.6s
+val: New cache created: /home/anhhd/Downloads/Datasets/nuimages_yolo/labels/val.cache
+optimizer: 'optimizer=auto' found, ignoring 'lr0=0.01' and determining best 'optimizer' and 'lr0' automatically... 
+optimizer: AdamW(lr=0.002, momentum=0.9) with parameter groups 124 weight(decay=0.0), 136 weight(decay=0.0005), 136 bias(decay=0.0)
+Plotting labels to /home/anhhd/Downloads/Datasets/nuimages/runs/detect/runs/pedestrian/yolo26m_nuimages/labels.jpg... 
+Using 67279 train, 16445 val images for fraction=1.0 at imgsz=640
+Using 4 dataloader workers
+Logging results to /home/anhhd/Downloads/Datasets/nuimages/runs/detect/runs/pedestrian/yolo26m_nuimages
+Starting training for 5 epochs...
+Closing dataloader mosaic
+
+      Epoch    GPU_mem   box_loss   cls_loss    l1_loss  Instances       Size
+        1/5      2.55G      1.855      7.404   0.003175          4     …: 8% ━─────────── 1458/16820 10.5it/s 2:23<24:27^        1/5      2.65G      2.055      2.501   0.003924          3       …: 100% ━━━━━━━━━━━━ 16820/16820 10.7it/s 26:18
+                 Class     Images  Instances      Box(P          R      mAP5…: 100% ━━━━━━━━━━━━ 2056/2056 21.6it/s 1:35
+                   all      16445      32185      0.657      0.414       0.48      0.232
+
+      Epoch    GPU_mem   box_loss   cls_loss    l1_loss  Instances       Size
+        2/5      2.78G      2.088      1.976   0.004056         16       …: 100% ━━━━━━━━━━━━ 16820/16820 10.8it/s 25:56
+                 Class     Images  Instances      Box(P          R      mAP5…: 100% ━━━━━━━━━━━━ 2056/2056 22.1it/s 1:33
+                   all      16445      32185      0.682      0.446      0.526      0.267
+
+      Epoch    GPU_mem   box_loss   cls_loss    l1_loss  Instances       Size
+        3/5      2.78G      2.011      1.833    0.00379          0       …: 100% ━━━━━━━━━━━━ 16820/16820 10.8it/s 25:52
+                 Class     Images  Instances      Box(P          R      mAP5…: 100% ━━━━━━━━━━━━ 2056/2056 22.3it/s 1:32
+                   all      16445      32185      0.752      0.487      0.581      0.303
+
+      Epoch    GPU_mem   box_loss   cls_loss    l1_loss  Instances       Size
+        4/5      2.78G      1.898      1.682   0.003484          9       …: 100% ━━━━━━━━━━━━ 16820/16820 10.9it/s 25:48
+                 Class     Images  Instances      Box(P          R      mAP5…: 100% ━━━━━━━━━━━━ 2056/2056 22.3it/s 1:32
+                   all      16445      32185      0.771      0.518      0.619       0.33
+
+      Epoch    GPU_mem   box_loss   cls_loss    l1_loss  Instances       Size
+        5/5      2.78G      1.784      1.529    0.00316          0       …: 100% ━━━━━━━━━━━━ 16820/16820 10.9it/s 25:45
+                 Class     Images  Instances      Box(P          R      mAP5…: 100% ━━━━━━━━━━━━ 2056/2056 22.3it/s 1:32
+                   all      16445      32185      0.769      0.534      0.633      0.343
+
+5 epochs completed in 2.292 hours.
+Optimizer stripped from /home/anhhd/Downloads/Datasets/nuimages/runs/detect/runs/pedestrian/yolo26m_nuimages/weights/last.pt, 44.0MB
+Optimizer stripped from /home/anhhd/Downloads/Datasets/nuimages/runs/detect/runs/pedestrian/yolo26m_nuimages/weights/best.pt, 44.0MB
+
+Validating /home/anhhd/Downloads/Datasets/nuimages/runs/detect/runs/pedestrian/yolo26m_nuimages/weights/best.pt...
+Ultralytics 8.4.175 🚀 Python-3.10.21 torch-2.11.0+cu128 CUDA:0 (NVIDIA GeForce RTX 5060 Laptop GPU, 7708MiB)
+YOLO26m summary (fused): 130 layers, 20,350,223 parameters, 0 gradients, 68.1 GFLOPs
+                 Class     Images  Instances      Box(P          R      mAP5…: 100% ━━━━━━━━━━━━ 2056/2056 21.5it/s 1:36
+                   all      16445      32185      0.769      0.534      0.633      0.343
+Speed: 0.1ms preprocess, 4.6ms inference, 0.0ms loss, 0.3ms postprocess per image
+Results saved to /home/anhhd/Downloads/Datasets/nuimages/runs/detect/runs/pedestrian/yolo26m_nuimages
+(ai_env) anhhd@anhhd-Cyborg-15-Max-C13WF:~/Downloads/Datasets/nuimages$ python train.py
+New https://pypi.org/project/ultralytics/8.4.177 available 😃 Update with 'pip install -U ultralytics'
+WARNING ⚠️ model '/home/anhhd/Downloads/Datasets/nuimages/runs/detect/runs/pedestrian/yolo26m_nuimages/weights/last.pt' is not a resumable training checkpoint (missing epoch/optimizer state). Use 'resume' only to continue incomplete training. Starting new training instead.
+Ultralytics 8.4.175 🚀 Python-3.10.21 torch-2.11.0+cu128 CUDA:0 (NVIDIA GeForce RTX 5060 Laptop GPU, 7708MiB)
+engine/trainer: agnostic_nms=False, amp=True, angle=1.0, augment=False, auto_augment=randaugment, batch=4, bgr=0.0, box=7.5, cache=False, cfg=None, channels_last=None, classes=None, close_mosaic=10, cls=0.5, cls_pw=0.0, cls_remap=True, compile=False, conf=None, copy_paste=0.0, copy_paste_mode=flip, cos_lr=False, cutmix=0.0, data=/home/anhhd/Downloads/Datasets/nuimages_yolo/data.yaml, degrees=0.0, deterministic=True, device=0, dfl=1.5, dgrad=0.5, dis=6.0, distill_model=None, dlam=1.0, dlog=1.0, dnn=False, dropout=0.0, dynamic=False, embed=None, epochs=15, erasing=0.4, exist_ok=False, fliplr=0.5, flipud=0.0, format=torchscript, fraction=1.0, freeze=None, hsv_h=0.015, hsv_s=0.7, hsv_v=0.4, imgsz=640, iou=0.7, kobj=1.0, line_width=None, lr0=0.01, lrf=0.01, mask_ratio=4, max_det=300, mixup=0.0, mode=train, model=/home/anhhd/Downloads/Datasets/nuimages/runs/detect/runs/pedestrian/yolo26m_nuimages/weights/last.pt, momentum=0.937, mosaic=1.0, multi_scale=0.0, name=yolo26m_nuimages, nbs=64, nms=None, opset=None, optimize=False, optimizer=auto, overlap_mask=True, patience=15, perspective=0.0, plots=True, pose=12.0, pretrained=True, profile=False, project=runs/detect/runs/pedestrian, quantize=None, rect=False, resume=False, retina_masks=False, rle=1.0, save=True, save_conf=False, save_crop=False, save_dir=/home/anhhd/Downloads/Datasets/nuimages/runs/detect/runs/detect/runs/pedestrian/yolo26m_nuimages, save_frames=False, save_json=False, save_period=5, save_txt=False, scale=0.5, seed=0, shear=0.0, show=False, show_boxes=True, show_conf=True, show_labels=True, simplify=True, single_cls=False, source=None, split=val, stream_buffer=False, task=detect, time=None, tracker=tracktrack.yaml, translate=0.1, val=True, verbose=True, vid_stride=1, visualize=False, warmup_bias_lr=0.1, warmup_epochs=3.0, warmup_momentum=0.8, weight_decay=0.0005, workers=4, workspace=None
+
+                   from  n    params  module                                       arguments                     
+  0                  -1  1      1856  ultralytics.nn.modules.conv.Conv             [3, 64, 3, 2]                 
+  1                  -1  1     73984  ultralytics.nn.modules.conv.Conv             [64, 128, 3, 2]               
+  2                  -1  1    111872  ultralytics.nn.modules.block.C3k2            [128, 256, 1, True, 0.25]     
+  3                  -1  1    590336  ultralytics.nn.modules.conv.Conv             [256, 256, 3, 2]              
+  4                  -1  1    444928  ultralytics.nn.modules.block.C3k2            [256, 512, 1, True, 0.25]     
+  5                  -1  1   2360320  ultralytics.nn.modules.conv.Conv             [512, 512, 3, 2]              
+  6                  -1  1   1380352  ultralytics.nn.modules.block.C3k2            [512, 512, 1, True]           
+  7                  -1  1   2360320  ultralytics.nn.modules.conv.Conv             [512, 512, 3, 2]              
+  8                  -1  1   1380352  ultralytics.nn.modules.block.C3k2            [512, 512, 1, True]           
+  9                  -1  1    656896  ultralytics.nn.modules.block.SPPF            [512, 512, 5, 3, True]        
+ 10                  -1  1    990976  ultralytics.nn.modules.block.C2PSA           [512, 512, 1]                 
+ 11                  -1  1         0  torch.nn.modules.upsampling.Upsample         [None, 2, 'nearest']          
+ 12             [-1, 6]  1         0  ultralytics.nn.modules.conv.Concat           [1]                           
+ 13                  -1  1   1642496  ultralytics.nn.modules.block.C3k2            [1024, 512, 1, True]          
+ 14                  -1  1         0  torch.nn.modules.upsampling.Upsample         [None, 2, 'nearest']          
+ 15             [-1, 4]  1         0  ultralytics.nn.modules.conv.Concat           [1]                           
+ 16                  -1  1    542720  ultralytics.nn.modules.block.C3k2            [1024, 256, 1, True]          
+ 17                  -1  1    590336  ultralytics.nn.modules.conv.Conv             [256, 256, 3, 2]              
+ 18            [-1, 13]  1         0  ultralytics.nn.modules.conv.Concat           [1]                           
+ 19                  -1  1   1511424  ultralytics.nn.modules.block.C3k2            [768, 512, 1, True]           
+ 20                  -1  1   2360320  ultralytics.nn.modules.conv.Conv             [512, 512, 3, 2]              
+ 21            [-1, 10]  1         0  ultralytics.nn.modules.conv.Concat           [1]                           
+ 22                  -1  1   1974784  ultralytics.nn.modules.block.C3k2            [1024, 512, 1, True, 0.5, True]
+ 23        [16, 19, 22]  1   2800158  ultralytics.nn.modules.head.Detect           [1, 1, True, [256, 512, 512]] 
+YOLO26m summary: 280 layers, 21,774,430 parameters, 21,774,430 gradients, 75.0 GFLOPs
+
+Transferred 768/768 items from pretrained weights
+AMP: running Automatic Mixed Precision (AMP) checks...
+AMP: checks passed ✅
+train: Fast image access ✅ (ping: 0.0±0.0 ms, read: 156.7±61.4 MB/s, size: 162.7 KB)
+train: Scanning /home/anhhd/Downloads/Datasets/nuimages_yolo/labels/train.cache... 67279 images, 32503 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 67279/67279 11.3Git/s 0.0s
+val: Fast image access ✅ (ping: 0.0±0.0 ms, read: 165.3±78.4 MB/s, size: 153.4 KB)
+val: Scanning /home/anhhd/Downloads/Datasets/nuimages_yolo/labels/val.cache... 16445 images, 8029 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 16445/16445 3.6Git/s 0.0s
+optimizer: 'optimizer=auto' found, ignoring 'lr0=0.01' and determining best 'optimizer' and 'lr0' automatically... 
+optimizer: MuSGD(lr=0.01, momentum=0.9) with parameter groups 124 weight(decay=0.0), 136 weight(decay=0.0005), 136 bias(decay=0.0)
+Plotting labels to /home/anhhd/Downloads/Datasets/nuimages/runs/detect/runs/detect/runs/pedestrian/yolo26m_nuimages/labels.jpg... 
+Using 67279 train, 16445 val images for fraction=1.0 at imgsz=640
+Using 4 dataloader workers
+Logging results to /home/anhhd/Downloads/Datasets/nuimages/runs/detect/runs/detect/runs/pedestrian/yolo26m_nuimages
+Starting training for 15 epochs...
+
+      Epoch    GPU_mem   box_loss   cls_loss    l1_loss  Instances       Size
+       1/15      2.68G      1.999      1.714   0.003361          5        640: 100% ━━━━━━━━━━━━ 16820/16820 8.5it/s 33:00
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 2056/2056 21.9it/s 1:34
+                   all      16445      32185      0.772      0.539      0.634      0.342
+
+      Epoch    GPU_mem   box_loss   cls_loss    l1_loss  Instances       Size
+       2/15       2.8G      2.022      1.731   0.003335         18        640: 100% ━━━━━━━━━━━━ 16820/16820 10.3it/s 27:05
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 2056/2056 22.3it/s 1:32
+                   all      16445      32185      0.774      0.543      0.639      0.348
+
+      Epoch    GPU_mem   box_loss   cls_loss    l1_loss  Instances       Size
+       3/15       2.8G      2.078      1.805   0.003492          2        640: 100% ━━━━━━━━━━━━ 16820/16820 10.6it/s 26:32
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 2056/2056 22.4it/s 1:32
+                   all      16445      32185      0.778      0.537      0.635      0.344
+
+      Epoch    GPU_mem   box_loss   cls_loss    l1_loss  Instances       Size
+       4/15      2.81G      2.109      1.824   0.003528          5        640: 100% ━━━━━━━━━━━━ 16820/16820 10.6it/s 26:22
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 2056/2056 22.4it/s 1:32
+                   all      16445      32185       0.79       0.55       0.65      0.356
+
+      Epoch    GPU_mem   box_loss   cls_loss    l1_loss  Instances       Size
+       5/15      2.81G       2.07      1.741   0.003427          8        640: 100% ━━━━━━━━━━━━ 16820/16820 10.6it/s 26:22
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 2056/2056 22.4it/s 1:32
+                   all      16445      32185      0.794      0.579      0.674      0.373
+Closing dataloader mosaic
+
+      Epoch    GPU_mem   box_loss   cls_loss    l1_loss  Instances       Size
+       6/15      2.81G      1.887      1.636   0.003335          3        640: 100% ━━━━━━━━━━━━ 16820/16820 10.7it/s 26:19
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 2056/2056 22.4it/s 1:32
+                   all      16445      32185      0.796      0.567      0.666       0.37
+
+      Epoch    GPU_mem   box_loss   cls_loss    l1_loss  Instances       Size
+       7/15      2.81G      1.868      1.594   0.003263          1        640: 100% ━━━━━━━━━━━━ 16820/16820 10.7it/s 26:18
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 2056/2056 22.4it/s 1:32
+                   all      16445      32185      0.797      0.571      0.672      0.374
+
+      Epoch    GPU_mem   box_loss   cls_loss    l1_loss  Instances       Size
+       8/15      2.81G      1.842      1.529   0.003204          4        640: 100% ━━━━━━━━━━━━ 16820/16820 10.7it/s 26:17
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 2056/2056 22.4it/s 1:32
+                   all      16445      32185      0.804      0.583      0.682      0.382
+
+      Epoch    GPU_mem   box_loss   cls_loss    l1_loss  Instances       Size
+       9/15      2.81G      1.805      1.486   0.003109          2        640: 100% ━━━━━━━━━━━━ 16820/16820 10.7it/s 26:18
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 2056/2056 22.4it/s 1:32
+                   all      16445      32185      0.805       0.59      0.688      0.388
+
+      Epoch    GPU_mem   box_loss   cls_loss    l1_loss  Instances       Size
+      10/15      2.81G      1.776      1.449   0.003019          3        640: 100% ━━━━━━━━━━━━ 16820/16820 10.7it/s 26:18
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 2056/2056 22.4it/s 1:32
+                   all      16445      32185      0.807      0.594      0.692      0.392
+
+      Epoch    GPU_mem   box_loss   cls_loss    l1_loss  Instances       Size
+      11/15      2.81G      1.748      1.408   0.002967         14        640: 100% ━━━━━━━━━━━━ 16820/16820 10.7it/s 26:18
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 2056/2056 22.4it/s 1:32
+                   all      16445      32185      0.812      0.596      0.696      0.395
+
+      Epoch    GPU_mem   box_loss   cls_loss    l1_loss  Instances       Size
+      12/15      2.81G       1.72      1.371   0.002888          3        640: 100% ━━━━━━━━━━━━ 16820/16820 10.7it/s 26:19
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 2056/2056 22.4it/s 1:32
+                   all      16445      32185      0.819        0.6        0.7      0.399
+
+      Epoch    GPU_mem   box_loss   cls_loss    l1_loss  Instances       Size
+      13/15      2.81G      1.682      1.322   0.002806         10        640: 100% ━━━━━━━━━━━━ 16820/16820 10.7it/s 26:15
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 2056/2056 22.5it/s 1:32
+                   all      16445      32185       0.82      0.602      0.704      0.401
+
+      Epoch    GPU_mem   box_loss   cls_loss    l1_loss  Instances       Size
+      14/15      2.81G      1.654      1.287   0.002718          2        640: 100% ━━━━━━━━━━━━ 16820/16820 10.7it/s 26:15
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 2056/2056 22.5it/s 1:31
+                   all      16445      32185      0.819      0.605      0.707      0.404
+
+      Epoch    GPU_mem   box_loss   cls_loss    l1_loss  Instances       Size
+      15/15      2.81G      1.623      1.256   0.002667          9        640: 100% ━━━━━━━━━━━━ 16820/16820 10.7it/s 26:14
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 2056/2056 22.5it/s 1:32
+                   all      16445      32185      0.819      0.608      0.708      0.405
+
+15 epochs completed in 7.089 hours.
+Optimizer stripped from /home/anhhd/Downloads/Datasets/nuimages/runs/detect/runs/detect/runs/pedestrian/yolo26m_nuimages/weights/last.pt, 44.0MB
+Optimizer stripped from /home/anhhd/Downloads/Datasets/nuimages/runs/detect/runs/detect/runs/pedestrian/yolo26m_nuimages/weights/best.pt, 44.0MB
+
+Validating /home/anhhd/Downloads/Datasets/nuimages/runs/detect/runs/detect/runs/pedestrian/yolo26m_nuimages/weights/best.pt...
+Ultralytics 8.4.175 🚀 Python-3.10.21 torch-2.11.0+cu128 CUDA:0 (NVIDIA GeForce RTX 5060 Laptop GPU, 7708MiB)
+YOLO26m summary (fused): 130 layers, 20,350,223 parameters, 0 gradients, 68.1 GFLOPs
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 2056/2056 22.0it/s 1:34
+                   all      16445      32185      0.819      0.608      0.708      0.405
+Speed: 0.1ms preprocess, 4.7ms inference, 0.0ms loss, 0.3ms postprocess per image
+Results saved to /home/anhhd/Downloads/Datasets/nuimages/runs/detect/runs/detect/runs/pedestrian/yolo26m_nuimages
+(ai_env) anhhd@anhhd-Cyborg-15-Max-C13WF:~/Downloads/Datasets/nuimages$ 
+
