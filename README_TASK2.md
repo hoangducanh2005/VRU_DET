@@ -64,11 +64,11 @@ Outputs:
 - `output/task2_metrics.json`: mean/p50/p95 inference latency, end-to-end
   latency, and effective FPS.
 
-## Kiểm tra từng frame
+## Inspecting frames one at a time
 
-Video mặc định phát liên tục nên khó kiểm tra ByteTrack. Dùng `--step` để
-hiển thị một frame rồi chờ phím bất kỳ trước khi chuyển sang frame tiếp theo;
-nhấn `q` để dừng. Nên giới hạn số frame lúc debug:
+The output video plays continuously, which can make it difficult to inspect
+ByteTrack behavior. Use `--step` to display a frame and wait for a key press
+before advancing; press `q` to stop. Limit the number of frames while debugging:
 
 ```powershell
 .\.venv\Scripts\python.exe .\task2_vru_tracking.py `
@@ -82,8 +82,8 @@ nhấn `q` để dừng. Nên giới hạn số frame lúc debug:
   --save-frames-dir output\debug_frames
 ```
 
-Nếu chỉ muốn phát chậm, dùng `--show --delay-ms 500` thay cho `--step`.
-Thời gian chờ của chế độ debug không được tính vào end-to-end latency.
+To play the video slowly instead, use `--show --delay-ms 500` instead of
+`--step`. Time spent waiting in debug mode is excluded from end-to-end latency.
 
 The default tracker is ByteTrack. To compare BoT-SORT, run the same command
 with `--tracker botsort`. The tracker is selected by configuration; no model
