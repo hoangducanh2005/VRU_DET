@@ -1,0 +1,69 @@
+{
+  "metadata": "/home/anhhd/navsim_workspace/dataset/downloads/openscene-v1.1/openscene-v1.1/meta_datas/mini/2021.06.28.16.29.11_veh-38_01415_01821.pkl",
+  "pred_csv": "task3_yolo26m/yolo26m_nuimages_20ep/results/predictions.csv",
+  "camera": "CAM_F0",
+  "iou_threshold": 0.5,
+  "image_shape": {
+    "height": 1080,
+    "width": 1920
+  },
+  "frames": 812,
+  "timestamp_fps": 2.0000026831108744,
+  "prediction_to_gt_class": {
+    "pedestrian": "pedestrian"
+  },
+  "scored_gt_classes": [
+    "pedestrian"
+  ],
+  "ignored_gt_boxes_other_classes": 85863,
+  "projected_gt_boxes": 5273,
+  "ignored_prediction_classes": {},
+  "detection": {
+    "GT": 5273,
+    "predictions": 2024,
+    "TP": 459,
+    "FP": 1565,
+    "FN": 4814,
+    "precision": 0.2267786561264822,
+    "recall": 0.08704722169542954,
+    "F1": 0.12580512539399755,
+    "AP_at_iou": 0.027272025545325485,
+    "mean_IoU_TP": 0.5758360184490132
+  },
+  "per_class": {
+    "pedestrian": {
+      "gt": 5273,
+      "pred": 2024,
+      "TP": 459,
+      "FP": 1565,
+      "FN": 4814,
+      "precision": 0.2267786561264822,
+      "recall": 0.08704722169542954,
+      "F1": 0.12580512539399755,
+      "AP": 0.027272025545325485,
+      "mean_IoU": 0.5758360184490132
+    }
+  },
+  "tracking": {
+    "IDTP": 245,
+    "IDFP": 1779,
+    "IDFN": 5028,
+    "IDF1": 0.06715088392490065,
+    "GT": 5273,
+    "predictions": 2024,
+    "FP": 1565,
+    "FN": 4814,
+    "ID_switches": 138,
+    "MOTA": -0.23591883178456285,
+    "ID_precision": 0.12104743083003952,
+    "ID_recall": 0.046463113976863264,
+    "unique_gt_track_tokens": 350,
+    "unique_prediction_track_ids": 203,
+    "matched_gt_track_tokens": 60,
+    "matched_prediction_track_ids": 90,
+    "tracked_prediction_detections": 2024,
+    "untracked_prediction_detections": 0,
+    "untracked_matches": 0,
+    "track_id_coverage": 1.0
+  }
+}

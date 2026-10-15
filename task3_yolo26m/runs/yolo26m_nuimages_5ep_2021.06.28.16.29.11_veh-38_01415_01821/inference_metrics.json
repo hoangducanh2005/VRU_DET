@@ -1,0 +1,28 @@
+{
+  "model": "/home/anhhd/Downloads/Datasets/nuimages/runs/detect/runs/pedestrian/yolo26m_nuimages/weights/best.pt",
+  "input": "/home/anhhd/navsim_workspace/dataset/downloads/openscene-v1.1/openscene_sensor_mini_camera/openscene-v1.1/sensor_blobs/mini/2021.06.28.16.29.11_veh-38_01415_01821/CAM_F0",
+  "image_sort": "mtime",
+  "frame_order": "navsim_metadata",
+  "navsim_metadata": "/home/anhhd/navsim_workspace/dataset/downloads/openscene-v1.1/openscene-v1.1/meta_datas/mini/2021.06.28.16.29.11_veh-38_01415_01821.pkl",
+  "camera_name": "CAM_F0",
+  "tracker": "bytetrack.yaml",
+  "classes": [
+    "pedestrian"
+  ],
+  "frames": 812,
+  "detections": 2022,
+  "inference_latency_ms": {
+    "mean": 11.67068219343814,
+    "p50": 8.579952002037317,
+    "p95": 9.714786650874885
+  },
+  "end_to_end_latency_ms": {
+    "mean": 19.838617176314692,
+    "p50": 13.337001997570042,
+    "p95": 14.892470699851401
+  },
+  "effective_fps": 41.45419496440729,
+  "video_written": false,
+  "frames_directory": "task3_yolo26m/runs/yolo26m_nuimages_5ep_2021.06.28.16.29.11_veh-38_01415_01821/visualized_frames",
+  "csv_format": "xyxy"
+}

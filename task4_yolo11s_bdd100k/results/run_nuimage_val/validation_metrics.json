@@ -1,0 +1,64 @@
+{
+  "task": "BDD100K-trained YOLO11s on NuImages pedestrian validation",
+  "weights": "/home/anhhd/Downloads/archive/runs/detect/runs/detect/bdd100k_yolo11s/weights/best.pt",
+  "weights_sha256": "27275d0b9c7fb2698e6642e96344aba8afb1c9efbd0915c89c170accd7725ef8",
+  "checkpoint_initial_model": "yolo11s.pt",
+  "checkpoint_pretrained": true,
+  "checkpoint_training_epochs": 25,
+  "checkpoint_training_data": "data.yaml",
+  "dataset": "/home/anhhd/Downloads/Datasets/nuimages_yolo",
+  "device": "NVIDIA GeForce RTX 5060 Laptop GPU",
+  "cuda_version": "12.8",
+  "torch_version": "2.11.0+cu128",
+  "ultralytics_version": "8.4.175",
+  "imgsz": 640,
+  "batch_size": 16,
+  "class_names": {
+    "0": "pedestrian",
+    "1": "rider",
+    "2": "car",
+    "3": "bus",
+    "4": "truck",
+    "5": "bicycle",
+    "6": "motorcycle",
+    "7": "traffic light",
+    "8": "traffic sign",
+    "9": "train"
+  },
+  "evaluated_class": "pedestrian",
+  "evaluated_class_id": 0,
+  "prediction_confidence_threshold": 0.25,
+  "validation": {
+    "images": 16445,
+    "ground_truth_instances": 32185,
+    "operating_confidence": "Ultralytics best-F1 validation operating point",
+    "prediction_confidence_floor": 0.001,
+    "precision": 0.6709959617011169,
+    "recall": 0.38449588317539224,
+    "mAP50": 0.42996752837789765,
+    "mAP50_95": 0.21585879189850826,
+    "fitness": 0.21585879189850826,
+    "speed_ms_per_image": {
+      "preprocess": 0.23724060786596912,
+      "inference": 5.420042618456959,
+      "loss": 0.00047118950371287014,
+      "postprocess": 0.5974525367239687
+    },
+    "elapsed_seconds": 123.6144854480226,
+    "ultralytics_results": {
+      "metrics/precision(B)": 0.6709959617011169,
+      "metrics/recall(B)": 0.38449588317539224,
+      "metrics/mAP50(B)": 0.42996752837789765,
+      "metrics/mAP50-95(B)": 0.21585879189850826,
+      "fitness": 0.21585879189850826
+    },
+    "validation_artifacts_dir": "/home/anhhd/GIT/VRU_DET/task4_yolo11s_bdd100k/results/run_nuimage_val/ultralytics_validation"
+  },
+  "prediction_pass": {
+    "images": 16445,
+    "detections": 13325,
+    "elapsed_seconds": 333.0281432720076,
+    "images_per_second_including_visualization": 49.38021104891489,
+    "output_dir": "/home/anhhd/GIT/VRU_DET/task4_yolo11s_bdd100k/results/run_nuimage_val/visualized_frames"
+  }
+}

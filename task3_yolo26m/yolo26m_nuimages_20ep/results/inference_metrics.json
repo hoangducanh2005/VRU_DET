@@ -1,0 +1,33 @@
+{
+  "model": "/home/anhhd/Downloads/Datasets/nuimages/runs/detect/runs/detect/runs/pedestrian/yolo26m_nuimages/weights/best.pt",
+  "input": "/home/anhhd/navsim_workspace/dataset/downloads/openscene-v1.1/openscene_sensor_mini_camera/openscene-v1.1/sensor_blobs/mini/2021.06.28.16.29.11_veh-38_01415_01821/CAM_F0",
+  "image_sort": "mtime",
+  "frame_order": "navsim_metadata",
+  "navsim_metadata": "/home/anhhd/navsim_workspace/dataset/downloads/openscene-v1.1/openscene-v1.1/meta_datas/mini/2021.06.28.16.29.11_veh-38_01415_01821.pkl",
+  "camera_name": "CAM_F0",
+  "tracker": "bytetrack.yaml",
+  "classes": [
+    "pedestrian"
+  ],
+  "frames": 812,
+  "detections": 2024,
+  "inference_latency_ms": {
+    "mean": 9.536178413820263,
+    "p50": 8.214548506657593,
+    "p95": 8.883800303738099
+  },
+  "end_to_end_latency_ms": {
+    "mean": 17.55074161325144,
+    "p50": 12.821766998968087,
+    "p95": 13.827855349518359
+  },
+  "effective_fps": 46.27400385718934,
+  "video_written": false,
+  "frames_directory": "task3_yolo26m/yolo26m_nuimages_20ep/results/visualized_frames",
+  "csv_format": "xyxy",
+  "training_lineage": "5-epoch nuImages checkpoint followed by 15 additional fine-tuning epochs",
+  "initial_checkpoint_training_epochs": 5,
+  "additional_finetuning_epochs": 15,
+  "cumulative_training_epochs": 20,
+  "checkpoint_train_args_epochs": 15
+}

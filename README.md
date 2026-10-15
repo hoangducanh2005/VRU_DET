@@ -4,17 +4,7 @@ This repository contains computer-vision experiments for vulnerable road user (V
 
 ## Inference examples
 
-The examples below come from the YOLO26m nuImages checkpoint fine-tuned for 15 epochs from an existing 5-epoch checkpoint (20 cumulative epochs). Boxes are labeled `pedestrian` and include confidence scores.
-
-**CAM_F0 — NavSim shard 1**
-
-![YOLO26m pedestrian detections in the NavSim front camera](docs/images/navsim_cam_f0_inference.jpg)
-
-**All eight synchronized NavSim cameras at one timestamp**
-
-![YOLO26m detections across the eight NavSim cameras](task3_yolo26m/yolo26m_nuimages_20ep/results/navsim_shard1_8cam/preview_montage.jpg)
-
-The full 812-timestamp, 8-camera annotated video and evaluation are in [the 20-epoch run results](task3_yolo26m/yolo26m_nuimages_20ep/README.md). The montage uses projected NavSim pedestrian ground truth for evaluation; it is a detection-only run without temporal tracking.
+Generated inference images and montages are kept locally and excluded from Git. The 20-epoch YOLO26m run, its annotated video, and evaluation are documented in [the run results](task3_yolo26m/yolo26m_nuimages_20ep/README.md).
 
 ## Project status
 
@@ -25,6 +15,8 @@ The full 812-timestamp, 8-camera annotated video and evaluation are in [the 20-e
 | Task 3.1 — YOLO26m-KITTI | Inference and evaluation artifacts are under the model folder. | [YOLO26m-KITTI](task3_yolo26m/yolo26m_kitti/README.md) |
 | Task 3.2 — YOLO26m nuImages, 5 epochs | Earlier checkpoint experiment with NavSim outputs. | [5-epoch run](task3_yolo26m/yolo26m_nuimages_5ep/README.md) |
 | Task 3 — YOLO26m nuImages, 20 cumulative epochs | 5-epoch checkpoint fine-tuned for 15 more epochs; includes NuImages validation and an 8-camera NavSim run. | [20-epoch run](task3_yolo26m/yolo26m_nuimages_20ep/README.md) |
+| Task 4 — YOLO11s COCO baseline | No fine-tuning; batched 8-camera NavSim inference with benchmark and projected-GT metrics. | [Task 4 guide](task4_yolo11s/README.md) · [Evidence](task4_yolo11s/results/navsim_shard1_8cam_20261015/evidence.md) |
+| Task 4 — YOLO11s BDD100K checkpoint | COCO-pretrained YOLO11s fine-tuned on BDD100K for 25 epochs; NavSim 8-camera inference and NuImages validation. | [Run guide](task4_yolo11s_bdd100k/README.md) · [NavSim evidence](task4_yolo11s_bdd100k/results/run_navsim/evidence.md) · [NuImages evidence](task4_yolo11s_bdd100k/results/run_nuimage_val/evidence.md) |
 
 The YOLO26m NuImages model is trained for the single `pedestrian` class. Its validation metrics on the NuImages validation split are **Precision 0.8211, Recall 0.6085, mAP@0.5 0.7098, and mAP@0.5:0.95 0.4078**. On NavSim shard 1 across eight cameras, the run reports **Precision 0.1330, Recall 0.1011, F1 0.1149, and AP@0.5 0.0201** using camera-projected pedestrian ground truth. These results use different datasets and evaluation protocols and should not be compared as if they were the same benchmark. Detailed evidence and per-camera metrics are linked from the run README.
 

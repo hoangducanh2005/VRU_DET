@@ -67,3 +67,19 @@ Triển khai **VRU Detection & Tracking** bằng YOLO26m cho bài toán Autonomo
 
 
 **Lưu ý:** Giữ nguyên cấu trúc project hiện tại, tái sử dụng pipeline tracking, chỉ thay model/checkpoint. Không tự động thay đổi dataset hoặc code không liên quan. Ưu tiên độ chính xác VRU và tracking ổn định, đồng thời đảm bảo latency thấp.
+--------------------------------------------------------------------------------------------
+
+Task 4 
+Implement and run a **VRU Detection baseline using YOLO11s** for an 8-camera autonomous driving system.
+
+**Requirements:**
+1. **Model:** Ultralytics YOLO11s with COCO pretrained weights (`yolo11s.pt`). No fine-tuning.
+2. **Input:** 8 independent camera images, processed using one shared YOLO11s model (batch inference). Dataset to run inference : navsim . run all 8 camera, ví visualize deliverables : 1 frame = goc nhin tu 8 camera tai cung 1 timestamp co hien thi boundingbox. Dong thoi tao metric danh gia luot chay inference nay
+3. **Detection:** Focus on VRU classes: `person`, `bicycle`, `motorcycle`.
+4. **Configuration:** `imgsz=640`, GPU NVIDIA CUDA
+5. **Benchmark:** Measure throughput (images/sec), per-batch latency, p95 latency, GPU memory usage, and FPS per camera equivalent.
+6. **Evaluation:** Use sample driving images or an available labeled dataset to measure Precision, Recall, mAP50, and mAP50-95. Clearly distinguish labeled evaluation from qualitative inference.
+7. **Visualization:** Save detection results for all 8 cameras with bounding boxes, confidence scores, and camera IDs.
+8. **Deliverables:** Runnable Python scripts,evidence .md, benchmark results (CSV/JSON), and visualized outputs.
+
+**Constraints:** Do not fine-tune or modify YOLO11 architecture. Do not require downloading the full BDD100K dataset. Use real measurements only; never fabricate metrics. Ensure the baseline is reproducible.

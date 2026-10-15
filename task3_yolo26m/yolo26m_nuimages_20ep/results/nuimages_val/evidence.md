@@ -26,7 +26,7 @@ Precision and recall use Ultralytics' validation operating point. mAP is compute
 
 - Images processed and saved: `16,445 / 16,445`
 - Prediction elapsed time: `185.55 s`
-- Sample annotated image with bounding boxes, `pedestrian` labels, and confidence scores: [`preview.jpg`](preview.jpg). The full 16,445-image visualization set is generated locally and omitted from this Git commit.
+- Annotated frames with bounding boxes, `pedestrian` labels, and confidence scores are generated locally and excluded from Git.
 - Validation metrics JSON: [`validation_metrics.json`](validation_metrics.json)
 - Inference configuration and timing JSON: [`inference_metrics.json`](inference_metrics.json)
 - Ultralytics validation artifact files are kept locally; aggregate metrics are recorded in `validation_metrics.json`.

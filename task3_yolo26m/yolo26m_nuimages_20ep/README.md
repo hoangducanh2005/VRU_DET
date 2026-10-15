@@ -5,9 +5,10 @@ The final checkpoint was initialized from the earlier nuImages checkpoint traine
 - Final checkpoint: [`weights/best.pt`](weights/best.pt)
 - NavSim shard 1, all 8 cameras: [`results/navsim_shard1_8cam/evidence.md`](results/navsim_shard1_8cam/evidence.md)
 - Synchronized 8-camera video: [`results/navsim_shard1_8cam/all_cameras_montage.mp4`](results/navsim_shard1_8cam/all_cameras_montage.mp4)
-- Montage preview: [`results/navsim_shard1_8cam/preview_montage.jpg`](results/navsim_shard1_8cam/preview_montage.jpg)
 - Predictions and full metrics: `results/navsim_shard1_8cam/predictions.csv`, `results/navsim_shard1_8cam/metrics.json`
-- nuImages validation evidence and metrics: [`results/nuimages_val/evidence.md`](results/nuimages_val/evidence.md), with a [sample annotated frame](results/nuimages_val/preview.jpg)
+- nuImages validation evidence and metrics: [`results/nuimages_val/evidence.md`](results/nuimages_val/evidence.md)
+
+Generated annotated frames and montage previews are kept locally and excluded from Git.
 
 To reproduce the 8-camera NavSim run from the repository root with the `ai_env` environment:
 

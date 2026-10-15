@@ -1,0 +1,27 @@
+{
+  "weights": "/home/anhhd/Downloads/Datasets/nuimages/runs/detect/runs/pedestrian/yolo26m_nuimages/weights/best.pt",
+  "data": "/home/anhhd/Downloads/Datasets/nuimages_yolo/data.yaml",
+  "split": "val",
+  "images": 16445,
+  "imgsz": 640,
+  "batch": 16,
+  "device": "cuda:0",
+  "confidence_threshold": "Ultralytics validation default",
+  "validation_elapsed_seconds": 159.57065101500484,
+  "metrics": {
+    "metrics/precision(B)": 0.7712263865462601,
+    "metrics/recall(B)": 0.535652527356517,
+    "metrics/mAP50(B)": 0.6353769008916073,
+    "metrics/mAP50-95(B)": 0.345623006748665,
+    "fitness": 0.345623006748665
+  },
+  "speed_ms_per_image": {
+    "preprocess": 0.17610678246847075,
+    "inference": 7.653252956833759,
+    "loss": 0.0003133296645375285,
+    "postprocess": 0.27169395045716543
+  },
+  "visualized_images": 16445,
+  "prediction_confidence_threshold": 0.25,
+  "prediction_elapsed_seconds": 188.2079726899974
+}

@@ -1,0 +1,122 @@
+{
+  "task": "Task 4 YOLO11s COCO-pretrained 8-camera NavSim baseline",
+  "weights": "/home/anhhd/GIT/VRU_DET/yolo11s.pt",
+  "weights_sha256": "85a76fe86dd8afe384648546b56a7a78580c7cb7b404fc595f97969322d502d5",
+  "metadata": "/home/anhhd/navsim_workspace/dataset/downloads/openscene-v1.1/openscene-v1.1/meta_datas/mini/2021.06.28.16.29.11_veh-38_01415_01821.pkl",
+  "sensor_root": "/home/anhhd/navsim_workspace/dataset/downloads/openscene-v1.1/openscene_sensor_mini_camera/openscene-v1.1/sensor_blobs/mini",
+  "output_dir": "/home/anhhd/GIT/VRU_DET/task4_yolo11s/results/navsim_shard1_8cam_20261015",
+  "device": "NVIDIA GeForce RTX 5060 Laptop GPU",
+  "cuda_version": "12.8",
+  "ultralytics_version": "8.4.175",
+  "torch_version": "2.11.0+cu128",
+  "imgsz": 640,
+  "confidence_threshold": 0.25,
+  "inference_confidence_floor": 0.001,
+  "nms_iou_threshold": 0.7,
+  "batch_size": 8,
+  "cameras": [
+    "CAM_F0",
+    "CAM_L0",
+    "CAM_R0",
+    "CAM_L1",
+    "CAM_R1",
+    "CAM_L2",
+    "CAM_R2",
+    "CAM_B0"
+  ],
+  "timestamps": 812,
+  "images": 6496,
+  "classes": {
+    "person": 0,
+    "bicycle": 1,
+    "motorcycle": 3
+  },
+  "ground_truth_note": "NavSim 3D boxes projected into each camera; pedestrian maps to COCO person, bicycle maps to bicycle. The shard has no motorcycle GT; motorcycle is reported as unsupported and excluded from mAP.",
+  "ground_truth_boxes_projected": {
+    "pedestrian": 26121,
+    "bicycle": 88,
+    "motorcycle": 0
+  },
+  "ignored_navsim_gt_counts": {
+    "vehicle": 17943,
+    "generic_object": 54875,
+    "traffic_cone": 9035,
+    "barrier": 3805,
+    "czone_sign": 135
+  },
+  "evaluation_iou_thresholds": [
+    0.5,
+    0.55,
+    0.6,
+    0.65,
+    0.7,
+    0.75,
+    0.8,
+    0.85,
+    0.9,
+    0.95
+  ],
+  "metrics_at_conf_threshold": {
+    "TP": 1362,
+    "FP": 9190,
+    "FN": 24847,
+    "precision": 0.12907505686125853,
+    "recall": 0.05196688160555534,
+    "F1": 0.07410026930714615,
+    "mAP50": 0.013099378256964132,
+    "mAP50_95": 0.0036579383495789707,
+    "mAP_classes_included": [
+      "person",
+      "bicycle"
+    ]
+  },
+  "per_class": {
+    "person": {
+      "ground_truth_boxes": 26121,
+      "predictions": 311293,
+      "TP_at_conf_iou50": 1362,
+      "FP_at_conf_iou50": 9136,
+      "FN_at_conf_iou50": 24759,
+      "precision_at_conf": 0.12973899790436275,
+      "recall_at_conf": 0.052141954749052484,
+      "AP50": 0.026198756513928265,
+      "AP50_95": 0.007315876699157941
+    },
+    "bicycle": {
+      "ground_truth_boxes": 88,
+      "predictions": 8191,
+      "TP_at_conf_iou50": 0,
+      "FP_at_conf_iou50": 54,
+      "FN_at_conf_iou50": 88,
+      "precision_at_conf": 0.0,
+      "recall_at_conf": 0.0,
+      "AP50": 0.0,
+      "AP50_95": 0.0
+    },
+    "motorcycle": {
+      "ground_truth_boxes": 0,
+      "predictions": 866,
+      "precision_at_conf": null,
+      "recall_at_conf": null,
+      "AP50": null,
+      "AP50_95": null,
+      "note": "No projected NavSim ground-truth boxes for this class; excluded from mAP."
+    }
+  },
+  "benchmark": {
+    "measured_batches": 812,
+    "warmup_batches_excluded": 1,
+    "mean_batch_latency_ms": 27.45541627309156,
+    "p95_batch_latency_ms": 29.013326996209795,
+    "mean_per_image_latency_ms": 3.431927034136445,
+    "inference_images_per_second": 291.38148627673957,
+    "inference_fps_per_camera_equivalent": 36.422685784592446,
+    "end_to_end_elapsed_seconds": 73.42532597300305,
+    "end_to_end_images_per_second": 88.47083637583634,
+    "end_to_end_fps_per_camera_equivalent": 11.058854546979543,
+    "gpu_peak_memory_allocated_mb": 270.6806640625,
+    "gpu_peak_memory_reserved_mb": 452.0
+  },
+  "visualization_frames": 812,
+  "predictions": 320350
+}
