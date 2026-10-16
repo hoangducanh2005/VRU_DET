@@ -97,6 +97,7 @@ def resolve_image(sensor_root: Path, relative_path: str) -> Path:
     raise FileNotFoundError(f"Could not resolve camera image: {relative_path}")
 
 
+# sensor2lidar_rotation +  sensor2lidar_translation
 def lidar_to_camera(points: np.ndarray, camera: dict[str, Any]) -> np.ndarray:
     """Use NavSim's row-vector LiDAR-to-camera homogeneous transform."""
     sensor2lidar_rotation = np.asarray(camera["sensor2lidar_rotation"], dtype=np.float64)
@@ -110,6 +111,7 @@ def lidar_to_camera(points: np.ndarray, camera: dict[str, Any]) -> np.ndarray:
     return (transform.T @ homogeneous.T).T[:, :3]
 
 
+#doi moi box   [x, y, z, length, width, height, heading] thanh 8 goc 3d 
 def box_corners_lidar(box: np.ndarray) -> np.ndarray:
     """Convert [x,y,z,length,width,height,heading] to eight LiDAR corners."""
     x, y, z, length, width, height, heading = box.tolist()
