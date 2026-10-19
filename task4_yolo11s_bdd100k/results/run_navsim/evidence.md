@@ -8,7 +8,6 @@
 - Checkpoint lineage: `yolo11s.pt` COCO-pretrained initialization, fine-tuned on BDD100K for `25` epochs; inference only in this run.
 
 ## Ground-truth evaluation
-
 NavSim 3D pedestrian and bicycle boxes are projected into each camera. NavSim has no separate rider or motorcycle GT labels; those predictions are visualized but excluded from mAP.
 Projected GT counts: pedestrian `26121`, bicycle `88`, rider `0`, motorcycle `0`.
 Other NavSim GT instances ignored (3D annotation counts, before camera projection): `{"barrier": 3805, "czone_sign": 135, "generic_object": 54875, "traffic_cone": 9035, "vehicle": 17943}`.

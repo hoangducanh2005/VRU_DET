@@ -4,7 +4,7 @@ This is a separate 8-camera inference run using the provided YOLO11s checkpoint,
 
 ## Checkpoint
 
-Default checkpoint: `/home/anhhd/Downloads/archive/runs/detect/runs/detect/bdd100k_yolo11s/weights/best.pt`. The checkpoint exposes these BDD100K classes:
+Default checkpoint: [`weights/best.pt`](weights/best.pt), trained for 25 epochs. The checkpoint exposes these BDD100K classes:
 
 ```text
 pedestrian, rider, car, bus, truck, bicycle, motorcycle, traffic light, traffic sign, train
@@ -18,7 +18,7 @@ From the repository root, using the CUDA environment with Ultralytics installed:
 
 ```bash
 python task4_yolo11s_bdd100k/run_bdd_yolo11s_navsim.py \
-  --weights /home/anhhd/Downloads/archive/runs/detect/runs/detect/bdd100k_yolo11s/weights/best.pt \
+  --weights task4_yolo11s_bdd100k/weights/best.pt \
   --device 0 \
   --imgsz 640 \
   --batch-size 8
@@ -45,7 +45,7 @@ Run the same checkpoint against the pedestrian-labeled NuImages validation split
 
 ```bash
 python task4_yolo11s_bdd100k/run_bdd_yolo11s_nuimage_val.py \
-  --weights /home/anhhd/Downloads/archive/runs/detect/runs/detect/bdd100k_yolo11s/weights/best.pt \
+  --weights task4_yolo11s_bdd100k/weights/best.pt \
   --dataset /home/anhhd/Downloads/Datasets/nuimages_yolo \
   --device 0 \
   --imgsz 640 \
