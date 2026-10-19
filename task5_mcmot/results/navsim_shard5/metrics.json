@@ -1,0 +1,77 @@
+{
+  "TP": 987,
+  "FP": 3207,
+  "FN": 13938,
+  "precision": 0.23533619456366237,
+  "recall": 0.06613065326633166,
+  "IDTP": 562,
+  "IDFP": 3632,
+  "IDFN": 14363,
+  "IDF1": 0.058789685653015324,
+  "ID_switches_per_camera_gt_track": 108,
+  "DetA_at_0.5": 0.05443414956982131,
+  "AssA_at_0.5": 0.1360263008360103,
+  "HOTA_at_0.5": 0.08604926498894046,
+  "cross_camera_association": {
+    "pair_count": 996,
+    "TP": 11,
+    "FP": 23,
+    "FN": 7,
+    "TN": 955,
+    "precision": 0.3235294117647059,
+    "recall": 0.6111111111111112,
+    "F1": 0.4230769230769231,
+    "accuracy": 0.9698795180722891
+  },
+  "protocol": "NavSim synchronized 8-camera sequence; 3D GT projected per camera; IoU 0.5",
+  "checkpoint": "D:\\GIT\\VRU_Det\\task4_yolo11s_bdd100k\\weights\\best.pt",
+  "checkpoint_sha256": "27275d0b9c7fb2698e6642e96344aba8afb1c9efbd0915c89c170accd7725ef8",
+  "checkpoint_declared_epochs": 25,
+  "metadata": "D:\\navsim_workspace\\dataset\\navsim_logs\\mini\\2021.06.09.14.58.55_veh-35_01894_02311.pkl",
+  "sensor_root": "D:\\navsim_workspace\\dataset\\sensor_blobs\\mini",
+  "frames": 834,
+  "cameras": [
+    "CAM_F0",
+    "CAM_L0",
+    "CAM_R0",
+    "CAM_L1",
+    "CAM_R1",
+    "CAM_L2",
+    "CAM_R2",
+    "CAM_B0"
+  ],
+  "detections": 4200,
+  "geometry": {
+    "method": "camera bbox bottom-center ray intersects configured LiDAR ground-z; camera calibration then lidar2global",
+    "ground_z_m": 0.0,
+    "same_timestamp_cluster_radius_m": 2.5,
+    "temporal_max_speed_mps": 8.0,
+    "appearance_reid": "not enabled"
+  },
+  "inference": {
+    "device": "NVIDIA GeForce RTX 4050 Laptop GPU",
+    "cuda": "13.0",
+    "torch": "2.14.1+cu130",
+    "ultralytics": "8.4.155",
+    "imgsz": 640,
+    "batch_size": 8,
+    "half_precision": true,
+    "mean_batch_latency_ms": 81.54244676261092,
+    "p95_batch_latency_ms": 184.29359500014453,
+    "images_per_second_detector_only": 98.10841246019837,
+    "mean_per_image_latency_ms": 10.192805845326365,
+    "end_to_end_seconds": 243.95684950000032,
+    "end_to_end_images_per_second": 27.34909888234145
+  },
+  "outputs": {
+    "tracks_csv": "D:\\GIT\\VRU_Det\\task5_mcmot\\results\\navsim_shard5\\tracks.csv",
+    "visualized_frames": "D:\\GIT\\VRU_Det\\task5_mcmot\\results\\navsim_shard5\\visualized_frames",
+    "video": "D:\\GIT\\VRU_Det\\task5_mcmot\\results\\navsim_shard5\\mcmot_montage.mp4"
+  },
+  "notes": [
+    "NavSim stores 3D GT; evaluation projects pedestrian and bicycle boxes into camera images.",
+    "NavSim does not provide separate rider or motorcycle GT labels; these classes are tracked and visualized but excluded from detection identity scoring.",
+    "HOTA is reported at one IoU threshold (0.5), using synchronized camera-frame observations as the evaluation units.",
+    "Camera-to-camera association relies on ground-plane ray intersection and temporal motion; there is no appearance ReID."
+  ]
+}
